@@ -521,9 +521,18 @@ class hooks_ksf_FA_Woocommerce extends hooks
     {
         $source = 'woocommerce';
         $orderData = $opts['order'] ?? $data['order'] ?? [];
+        // Include line items (shipping, tax, coupon) as embedded DTO fields
+        $lineItems = $orderData['line_items'] ?? $data['line_items'] ?? [];
+        $shippingAmount = array_sum(array_map(fn($item) => (float)($item['shipping_amount'] ?? 0), $lineItems));
+        $taxAmount = array_sum(array_map(fn($item) => (float)($item['tax_amount'] ?? 0), $lineItems));
+        $couponDiscount = array_sum(array_map(fn($item) => (float)($item['discount_amount'] ?? 0), $lineItems));
         $hookData = array_merge($orderData, [
             'source' => $source,
             'status' => $orderData['status'] ?? 'pending',
+            'line_items' => $lineItems,
+            'shipping_amount' => $shippingAmount,
+            'tax_amount' => $taxAmount,
+            'coupon_discount' => $couponDiscount,
             'raw_json' => json_encode($orderData),
         ]);
         \hook_invoke_all('STAGE_TRANSACTION', ['source' => $source, 'transaction' => $hookData]);
@@ -543,16 +552,19 @@ class hooks_ksf_FA_Woocommerce extends hooks
         return $hookData;
     }
 
-    public function stage_inventory(&$data, $opts = null)
+    public function handle_woo_webhook(&$data, $opts = null)
     {
         $source = 'woocommerce';
-        $inventoryData = $opts['inventory'] ?? $data['inventory'] ?? [];
-        $hookData = array_merge($inventoryData, [
+        $webhookData = $opts['webhook'] ?? $data['webhook'] ?? [];
+        $hookData = array_merge($webhookData, [
             'source' => $source,
-            'status' => 'staged',
-            'raw_json' => json_encode($inventoryData),
+            'event_type' => $webhookData['type'] ?? $data['type'] ?? '',
+            'event_id' => $webhookData['id'] ?? $data['id'] ?? null,
+            'created_at' => $webhookData['created_at'] ?? $data['created_at'] ?? null,
+            'raw_json' => json_encode($webhookData),
         ]);
-        \hook_invoke_all('STAGE_ENTITY', $hookData);
+        // Respond to webhook event (receiving module handles event processing)
+        \hook_invoke_all('STAGE_WEBHOOK_EVENT', $hookData);
         return $hookData;
     }
 }
