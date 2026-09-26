@@ -92,17 +92,40 @@ Each table gets a `{table}_db.inc` gateway exposing `write_{table}()` /
   PHP 8+ transitive deps breaks a PHP 7.x container) — pin
   `config.platform.php` to the container's PHP where needed.
 
+### Integration-environment gotchas (ksfii_app pod, verified 2026-09)
+
+- The dev-shell runs as **root**, so `git`/file writes inside the bind-mounted
+  deploy clones leave root-owned files and rewrite mode bits on
+  checkout/reset. If `git pull` at a bind point refuses with "Your local
+  changes to the following files would be overwritten" while `git status --short`
+  is clean, suspect in order: an `assume-unchanged` flag (`git ls-files -v`
+  shows lowercase `h`), a root-owned `.git/index` (makes `git update-index`
+  silently a no-op), or a 186-hardlink shared doc whose content is ahead of
+  HEAD. The reliable fix is aligning the clone to origin from the deploy clone:
+  `git fetch && git reset --hard origin/main`. Never hand-`chmod`/`chown`
+  tracked files mid-tree; re-align instead.
+- The web front-end HTML-encodes `&` in query strings mid-transit:
+  `$_SERVER['REQUEST_URI']` reads e.g. `...?view=contacts&amp;filter_debtor_no=1`
+  while `$_GET` still parses every param correctly (so filtering works end to
+  end). Round-trips are consistent — form `action=` URLs and `Location:` headers
+  carry the same encoded form and are re-decoded the same way. Therefore when
+  appending a query param to `formAction()`/`REQUEST_URI` for a redirect, detect
+  an existing param with `strpos($url, 'name=')` instead of splitting on raw `&`.
+
 ### ComposerDependencies — self-installing vendor on activation
 
-Each module bundles `ComposerDependencies.php` in its **root directory** (copied from
-`ksf_FA_Common/src/Utils/ComposerDependencies.php`). This solves the chicken-and-egg
-problem: vendor/ doesn't exist until composer runs, but we need to run composer to
-create vendor/.
+Each module bundles `ComposerDependencies.php` in its **root directory**. The copy
+source is the per-module template
+`ksf_FA_Common/src/Utils/ComposerDependencies.template.php`: **replace the
+`MODULENAME` token in the namespace with your module's short name** (e.g.
+`ksfraser\FrontAccounting\HRM\Utils` for ksf_FA_HRM). This solves the
+chicken-and-egg problem: vendor/ doesn't exist until composer runs, but we need
+to run composer to create vendor/.
 
 ```php
 // hooks.php — top of file, BEFORE any other requires
 require_once __DIR__ . '/ComposerDependencies.php';
-\ksfraser\FrontAccounting\Common\Utils\ComposerDependencies::ensure(__DIR__);
+\ksfraser\FrontAccounting\HRM\Utils\ComposerDependencies::ensure(__DIR__);
 
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
@@ -113,6 +136,21 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 not, it runs `composer install --no-interaction --prefer-dist` in `$moduleDir`. FA
 calls `install_extension()` before activation completes, so vendor/ is ready when
 other hook methods run.
+
+The guard is **namespace-scoped** (sentinel constant derived from `__NAMESPACE__` +
+`class_exists(__NAMESPACE__, false)`). This is deliberate:
+- Each module that renames `MODULENAME` gets its own class in its own namespace —
+  copies can never collide, and the legacy global constant
+  `KSF_FA_COMMON_COMPOSER_DEPENDENCIES_DECLARED` is NOT set for renamed copies (so a
+  properly-renamed module never suppresses a sibling).
+- If a module forgets to replace `MODULENAME`, all unrenamed copies collapse onto
+  the placeholder namespace; only the first to load declares the class, the rest
+  short-circuit — no redeclaration fatal, no clobbering. Their hooks.php calls still
+  resolve since the class takes `$moduleDir` per call.
+- The package's own `ksf_FA_Common/src/Utils/ComposerDependencies.php` (in the
+  `Common\Utils` namespace) uses the identical guard and may also be loaded; it
+  additionally defines the legacy constant for backward compatibility with older
+  copies. Do NOT copy that file into a module — copy the `.template.php`.
 
 ## 8. FA module naming / security constants
 
@@ -129,6 +167,44 @@ Every direct-access module page MUST call `add_access_extensions()` (registering
 its security areas) **before** `page_header()`. Missing it produces a blank
 (~855-byte) page. Guard so that a user without the area is refused before any
 output.
+
+### FA UI bootstrap — `ui.inc` is NOT auto-loaded
+
+`includes/main.inc` only pulls `ui_controls.inc` (provides `start_form`,
+`end_form`, `start_table`, button helpers, ...). The rest of the FA UI layer —
+`ui_lists.inc` (`customer_list`, `customer_list_row`, `combo_input`,
+`array_selector`, ...), `ui_input.inc`, `ui_msgs.inc`, `ui_globals.inc`,
+`ui_view.inc`, `data_checks.inc` — is loaded by `includes/ui.inc`, which every
+native FA page `include_once(...)`s after `session.inc`.
+
+App-shell module entry pages (e.g. `modules/ksf_FA_CRM/index.php`) MUST do the
+same:
+
+```php
+include_once($path_to_root . "/includes/session.inc");
+add_access_extensions();
+include_once($path_to_root . "/includes/ui.inc"); // required for ui_lists helpers
+```
+
+Without it, tab code that calls an FA-native list/DLL helper (e.g.
+`customer_list_row`) silently skips rendering that control: `start_form` /
+`end_table` still work because `main.inc` loaded `ui_controls.inc`, so the page
+renders normally minus the helper control, with no error visible. Debugging
+trap: `function_exists('start_form') === true` does NOT imply
+`function_exists('customer_list_row')`.
+
+### Tab-footer buttons — native `inputsubmit`, never `ajaxsubmit`
+
+FA's `js/inserts.js` intercepts clicks on elements with class
+`ajaxsubmit`/`editbutton`/`navibutton` and routes them through
+`JsHttpRequest.request()` — an XHR that swallows navigation (POST persists, the
+page never reloads; F5 shows the change). `ksf_FA_Common`'s `FormFooter`
+historically emitted `class="ajaxsubmit"`, so Save/Cancel on every app-shell tab
+had this symptom. Convention (decided 2026-09): tab-footer Save/Cancel buttons
+use FA-native classes (`inputsubmit`) — `FormFooter` defaults `useAjax=false`;
+`ajaxsubmit` is only opt-in for content that genuinely wants in-place XHR.
+`MasterSummaryTable` row actions (Edit/Delete) already render native
+`inputsubmit` rows (the tab controller passes `'ajax' => false`).
 
 ## 10. FA DB layer — correct API (gotchas)
 
