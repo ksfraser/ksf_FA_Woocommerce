@@ -503,4 +503,56 @@ class hooks_ksf_FA_Woocommerce extends hooks
         
         return $GLOBALS['woo_sync_services_cache'];
     }
+
+    public function stage_customer(&$data, $opts = null)
+    {
+        $source = 'woocommerce';
+        $customerData = $opts['customer'] ?? $data['customer'] ?? [];
+        $hookData = array_merge($customerData, [
+            'source' => $source,
+            'status' => 'staged',
+            'raw_json' => json_encode($customerData),
+        ]);
+        \hook_invoke_all('STAGE_CUSTOMER', ['source' => $source, 'customer' => $hookData]);
+        return $hookData;
+    }
+
+    public function stage_order(&$data, $opts = null)
+    {
+        $source = 'woocommerce';
+        $orderData = $opts['order'] ?? $data['order'] ?? [];
+        $hookData = array_merge($orderData, [
+            'source' => $source,
+            'status' => $orderData['status'] ?? 'pending',
+            'raw_json' => json_encode($orderData),
+        ]);
+        \hook_invoke_all('STAGE_TRANSACTION', ['source' => $source, 'transaction' => $hookData]);
+        return $hookData;
+    }
+
+    public function stage_payment(&$data, $opts = null)
+    {
+        $source = 'woocommerce';
+        $paymentData = $opts['payment'] ?? $data['payment'] ?? [];
+        $hookData = array_merge($paymentData, [
+            'source' => $source,
+            'status' => 'staged',
+            'raw_json' => json_encode($paymentData),
+        ]);
+        \hook_invoke_all('STAGE_PAYMENT', ['source' => $source, 'payment' => $hookData]);
+        return $hookData;
+    }
+
+    public function stage_inventory(&$data, $opts = null)
+    {
+        $source = 'woocommerce';
+        $inventoryData = $opts['inventory'] ?? $data['inventory'] ?? [];
+        $hookData = array_merge($inventoryData, [
+            'source' => $source,
+            'status' => 'staged',
+            'raw_json' => json_encode($inventoryData),
+        ]);
+        \hook_invoke_all('STAGE_ENTITY', $hookData);
+        return $hookData;
+    }
 }
