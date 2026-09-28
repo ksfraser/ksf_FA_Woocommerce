@@ -280,8 +280,3 @@ the variants). Container mounts were historically split across
 `podman/ksf-compose.yaml` vs the ansible role's `frontaccounting-container.yml`;
 the two recipes currently differ — reconcile before trusting either as source
 of truth.
-
---- Update 2026-09-26 ---
-- Customer interface renamed: syncCustomerFromFAToSquare / syncCustomerFromSquareToFA.
-- syncCustomerFromSquareToFA now stages through Import Staging (StagingCustomerDAO) instead of direct debtor insert/update, supporting review/matching before final debtor creation (coordinates with ksf_FA_ImportStagingProcessing).
-- PHPUnit: 309 tests pass; 2 skipped (GD extension missing for CatalogExporter image tests).
