@@ -42,7 +42,7 @@ class hooks_ksf_FA_Woocommerce extends hooks
     var $module_name = 'ksf_FA_Woocommerce';
 
     /** @var string Module version */
-    var $version = '2.4.3-0';
+    var $version = '2.4.4';
 
     /** @var string Module path */
     var $module_path;
