@@ -351,10 +351,10 @@ class hooks_ksf_FA_Woocommerce extends hooks
                 $selected == 'woocommerce_secret'
             ),
             'woocommerce_verify_ssl' => array(
-                'Verify WooCommerce SSL Certificate',
-                'yesno',
+                'Verify WooCommerce SSL Certificate (1 = yes)',
+                'text',
                 null,
-                0,
+                '1',
                 $selected == 'woocommerce_verify_ssl'
             ),
             'woocommerce_ca_bundle' => array(
@@ -366,9 +366,9 @@ class hooks_ksf_FA_Woocommerce extends hooks
             ),
             'woocommerce_timeout' => array(
                 'WooCommerce API Timeout (seconds)',
-                'integer',
+                'text',
                 null,
-                30,
+                '30',
                 $selected == 'woocommerce_timeout'
             ),
         );
