@@ -299,13 +299,26 @@ class hooks_ksf_FA_Woocommerce extends hooks
         if (isset($GLOBALS['woo_sync_config_cache'])) {
             return $GLOBALS['woo_sync_config_cache'];
         }
-        
+
         $config = array(
             'wc_url' => get_company_pref('woocommerce_url') ?: '',
             'wc_key' => get_company_pref('woocommerce_key') ?: '',
             'wc_secret' => get_company_pref('woocommerce_secret') ?: '',
+            'verify_ssl' => get_company_pref('woocommerce_verify_ssl') === '1',
+            'ca_bundle' => get_company_pref('woocommerce_ca_bundle') ?: '',
+            'timeout' => (int) (get_company_pref('woocommerce_timeout') ?: 30),
         );
-        
+
+        // WooCommerce only performs consumer-key basic authentication when the
+        // request is HTTPS (server side is_ssl(), and the official client only
+        // signs with basic auth for https:// URLs). When a CA bundle is
+        // configured, trust it so verification stays on over the pod bridge.
+        if ($config['ca_bundle'] !== '' && is_readable($config['ca_bundle'])) {
+            ini_set('curl.cainfo', $config['ca_bundle']);
+            ini_set('openssl.cafile', $config['ca_bundle']);
+            $config['verify_ssl'] = true;
+        }
+
         $GLOBALS['woo_sync_config_cache'] = $config;
         return $config;
     }
@@ -336,6 +349,27 @@ class hooks_ksf_FA_Woocommerce extends hooks
                 null,
                 '',
                 $selected == 'woocommerce_secret'
+            ),
+            'woocommerce_verify_ssl' => array(
+                'Verify WooCommerce SSL Certificate',
+                'yesno',
+                null,
+                0,
+                $selected == 'woocommerce_verify_ssl'
+            ),
+            'woocommerce_ca_bundle' => array(
+                'WooCommerce CA Bundle Path',
+                'text',
+                null,
+                '',
+                $selected == 'woocommerce_ca_bundle'
+            ),
+            'woocommerce_timeout' => array(
+                'WooCommerce API Timeout (seconds)',
+                'integer',
+                null,
+                30,
+                $selected == 'woocommerce_timeout'
             ),
         );
     }
@@ -441,10 +475,19 @@ class hooks_ksf_FA_Woocommerce extends hooks
             $logDir . '/woo_sync.log'
         );
         
+        // The client's HttpClient only uses HTTP basic auth (which consumer
+        // key/secret requires) when the URL starts with https:// - otherwise it
+        // falls back to OAuth 1.0a signing and WooCommerce rejects the
+        // signature. timeout/verify_ssl are passed explicitly; verify_ssl comes
+        // from the CA bundle configured in get_woo_config().
         $wooClient = new \Automattic\WooCommerce\Client(
             $config['wc_url'],
             $config['wc_key'],
-            $config['wc_secret']
+            $config['wc_secret'],
+            array(
+                'timeout' => $config['timeout'] > 0 ? $config['timeout'] : 30,
+                'verify_ssl' => $config['verify_ssl'],
+            )
         );
         $restClient = new \ksfraser\FrontAccounting\Woocommerce\WooRestClient($wooClient, $logger);
         
@@ -513,7 +556,8 @@ class hooks_ksf_FA_Woocommerce extends hooks
             'status' => 'staged',
             'raw_json' => json_encode($customerData),
         ]);
-        \hook_invoke_all('STAGE_CUSTOMER', ['source' => $source, 'customer' => $hookData]);
+        $hookPayload = ['source' => $source, 'customer' => $hookData];
+        \hook_invoke_all('STAGE_CUSTOMER', $hookPayload);
         return $hookData;
     }
 
@@ -535,7 +579,8 @@ class hooks_ksf_FA_Woocommerce extends hooks
             'coupon_discount' => $couponDiscount,
             'raw_json' => json_encode($orderData),
         ]);
-        \hook_invoke_all('STAGE_TRANSACTION', ['source' => $source, 'transaction' => $hookData]);
+        $hookPayload = ['source' => $source, 'transaction' => $hookData];
+        \hook_invoke_all('STAGE_TRANSACTION', $hookPayload);
         return $hookData;
     }
 
@@ -548,7 +593,8 @@ class hooks_ksf_FA_Woocommerce extends hooks
             'status' => 'staged',
             'raw_json' => json_encode($paymentData),
         ]);
-        \hook_invoke_all('STAGE_PAYMENT', ['source' => $source, 'payment' => $hookData]);
+        $hookPayload = ['source' => $source, 'payment' => $hookData];
+        \hook_invoke_all('STAGE_PAYMENT', $hookPayload);
         return $hookData;
     }
 
