@@ -675,4 +675,24 @@ class hooks_ksf_FA_Woocommerce extends hooks
         \hook_invoke_all('STAGE_ENTITY', $hookData);
         return $hookData;
     }
+
+    /**
+     * Stage a WooCommerce inventory record.
+     *
+     * @param array &$data Source payload
+     * @param array|null $opts Must include 'inventory' key
+     * @return array Staged payload
+     */
+    public function stage_inventory(&$data, $opts = null)
+    {
+        $source = 'woocommerce';
+        $inventoryData = $opts['inventory'] ?? $data['inventory'] ?? [];
+        $hookData = array_merge($inventoryData, [
+            'source' => $source,
+            'status' => 'staged',
+            'raw_json' => json_encode($inventoryData),
+        ]);
+        \hook_invoke_all('STAGE_ENTITY', $hookData);
+        return $hookData;
+    }
 }
