@@ -42,7 +42,7 @@ class hooks_ksf_FA_Woocommerce extends hooks
     var $module_name = 'ksf_FA_Woocommerce';
 
     /** @var string Module version */
-    var $version = '2.4.3-0';
+    var $version = '2.4.4';
 
     /** @var string Module path */
     var $module_path;
@@ -125,6 +125,7 @@ class hooks_ksf_FA_Woocommerce extends hooks
             $path_to_root . '/modules/' . $this->module_name . '/admin/import_customers.php',
             'SA_WOOCOMMERCE_IMPORT'
         );
+        $app->add_rapp_function($externalLevel, _('WooCommerce Admin'), $path_to_root . '/modules/' . $this->module_name . '/pages/admin.php', 'SA_WOOCOMMERCE_STAGING');
     }
 
     /**
@@ -532,6 +533,7 @@ class hooks_ksf_FA_Woocommerce extends hooks
         );
         
         $GLOBALS['woo_sync_services_cache'] = array(
+            'restClient' => $restClient,
             'productExporter' => $productExporter,
             'variableProductService' => $variableProductService,
             'orderExporter' => $orderExporter,
