@@ -32,7 +32,15 @@ fire-and-forget event with no responder expecting a reply.
 commit `b30c1b3` the rejection is reported back (`staged => false`, `error`
 populated) instead of being swallowed, but **nothing is actually staged**.
 
-`staging-dto` provides `StagingProduct`, `StagingCoupon` and `StagingShipment`;
-there is **no tax DTO**. Building these mappings (and deciding what to do about
-tax) is still open. `StagingResponseNotDiscardedTest` pins the current loud
-failure so the gap cannot silently return.
+`staging-dto` provides `StagingProduct`, `StagingCoupon`, `StagingShipment` and
+`StagingTax`, but **none of those four are supported by ISU's `DtoAdapter`**,
+which stages only `StagingOrder`, `StagingInvoice`, `StagingPayment`,
+`StagingRefund`, `StagingSubscription`, `StagingCustomer`, `StagingProduct`,
+`StagingProductVariant` and `StagingCategory`. Anything else raises
+`InvalidArgumentException('Unsupported DTO type: ...')`.
+
+So of these four handlers, only `stage_product` could work today (StagingProduct
+is supported); coupon, shipment and tax need adapter support added first, which
+means new staging tables and a design decision. Building them is still open.
+`StagingResponseNotDiscardedTest` pins the current loud failure so the gap
+cannot silently return.
