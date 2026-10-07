@@ -549,6 +549,78 @@ class hooks_ksf_FA_Woocommerce extends hooks
         return $GLOBALS['woo_sync_services_cache'];
     }
 
+    /**
+     * Dispatch a staging capability and surface the stager's response.
+     *
+     * Woo is a source system: it must not name its stager. ISU documents these
+     * three as hook_invoke_first() calls returning the serialized record, so
+     * that is the dispatcher used here.
+     *
+     * These used to be hook_invoke_all() broadcasts, which was wrong in two
+     * ways: every listener saw the payload (nothing needs to observe it), and
+     * because a broadcast is fire-and-forget Woo discarded ISU's response --
+     * so the staging row was created but Woo never learned its ID. The return
+     * value of hook_invoke_all() is the array_merge_recursive() of every
+     * provider's reply, which is meaningless here.
+     *
+     * @param string     $capability
+     * @param array      $payload
+     * @param array      $opts
+     * @return array|null The stager's response array, or null if unhandled
+     */
+    private function invokeStagingCapability($capability, &$payload, $opts = null)
+    {
+        if (function_exists('hook_invoke_first')) {
+            return hook_invoke_first($capability, $payload, $opts);
+        }
+
+        if (function_exists('hook_invoke_all')) {
+            $merged = hook_invoke_all($capability, $payload, $opts);
+            if (is_array($merged) && isset($merged[0]) && is_array($merged[0])) {
+                return $merged[0];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Merge a stager response into the locally built payload.
+     *
+     * Keeps the existing return shape (the merged $hookData) that existing
+     * callers and tests rely on, while no longer throwing away the staging ID.
+     *
+     * @param array      $hookData
+     * @param array|null $response
+     * @return array
+     */
+    private function mergeStagingResponse(array $hookData, $response)
+    {
+        if (!is_array($response)) {
+            $hookData['staged'] = false;
+            return $hookData;
+        }
+
+        $hookData['staged']  = !empty($response['success']);
+        $hookData['success'] = !empty($response['success']);
+
+        if (!empty($response['error'])) {
+            $hookData['error'] = (string)$response['error'];
+        }
+
+        if (isset($response['result']) && is_array($response['result'])) {
+            $result = $response['result'];
+            $id     = $result['stagingId'] ?? $result['id'] ?? null;
+
+            if ($id !== null) {
+                $hookData['staging_id'] = (int)$id;
+                $hookData['id']         = (int)$id;
+            }
+        }
+
+        return $hookData;
+    }
+
     public function stage_customer(&$data, $opts = null)
     {
         $source = 'woocommerce';
@@ -559,8 +631,8 @@ class hooks_ksf_FA_Woocommerce extends hooks
             'raw_json' => json_encode($customerData),
         ]);
         $hookPayload = ['source' => $source, 'customer' => $hookData];
-        \hook_invoke_all('STAGE_CUSTOMER', $hookPayload);
-        return $hookData;
+        $response    = $this->invokeStagingCapability('STAGE_CUSTOMER', $hookPayload, ['source' => $source]);
+        return $this->mergeStagingResponse($hookData, $response);
     }
 
     public function stage_order(&$data, $opts = null)
@@ -582,8 +654,8 @@ class hooks_ksf_FA_Woocommerce extends hooks
             'raw_json' => json_encode($orderData),
         ]);
         $hookPayload = ['source' => $source, 'transaction' => $hookData];
-        \hook_invoke_all('STAGE_TRANSACTION', $hookPayload);
-        return $hookData;
+        $response    = $this->invokeStagingCapability('STAGE_TRANSACTION', $hookPayload, ['source' => $source]);
+        return $this->mergeStagingResponse($hookData, $response);
     }
 
     public function stage_payment(&$data, $opts = null)
@@ -596,8 +668,8 @@ class hooks_ksf_FA_Woocommerce extends hooks
             'raw_json' => json_encode($paymentData),
         ]);
         $hookPayload = ['source' => $source, 'payment' => $hookData];
-        \hook_invoke_all('STAGE_PAYMENT', $hookPayload);
-        return $hookData;
+        $response    = $this->invokeStagingCapability('STAGE_PAYMENT', $hookPayload, ['source' => $source]);
+        return $this->mergeStagingResponse($hookData, $response);
     }
 
     public function handle_woo_webhook(&$data, $opts = null)
@@ -632,8 +704,22 @@ class hooks_ksf_FA_Woocommerce extends hooks
             'status' => 'staged',
             'raw_json' => json_encode($taxData),
         ]);
-        \hook_invoke_all('STAGE_ENTITY', $hookData);
-        return $hookData;
+        // Dispatched by capability so the stager's response is not discarded.
+        //
+        // These four were hook_invoke_all() broadcasts of a RAW ARRAY, but ISU's
+        // STAGE_ENTITY responder REQUIRES a \Ksfraser\StagingDto\StagingEntity
+        // instance and rejects anything else with
+        // 'stageEntity requires a StagingEntity DTO instance'. Because a
+        // broadcast is fire-and-forget, that rejection was thrown away and the
+        // method returned as if it had staged. Routing through
+        // invokeStagingCapability()/mergeStagingResponse() makes the rejection
+        // observable ('staged' => false, 'error' => ...).
+        //
+        // NOTE: these still need real DTOs (StagingProduct / StagingCoupon /
+        // StagingShipment exist; there is no tax DTO). Until then these paths
+        // fail loudly rather than silently.
+        $response = $this->invokeStagingCapability('STAGE_ENTITY', $hookData);
+        return $this->mergeStagingResponse($hookData, $response);
     }
 
     /**
@@ -652,8 +738,22 @@ class hooks_ksf_FA_Woocommerce extends hooks
             'status' => 'staged',
             'raw_json' => json_encode($couponData),
         ]);
-        \hook_invoke_all('STAGE_ENTITY', $hookData);
-        return $hookData;
+        // Dispatched by capability so the stager's response is not discarded.
+        //
+        // These four were hook_invoke_all() broadcasts of a RAW ARRAY, but ISU's
+        // STAGE_ENTITY responder REQUIRES a \Ksfraser\StagingDto\StagingEntity
+        // instance and rejects anything else with
+        // 'stageEntity requires a StagingEntity DTO instance'. Because a
+        // broadcast is fire-and-forget, that rejection was thrown away and the
+        // method returned as if it had staged. Routing through
+        // invokeStagingCapability()/mergeStagingResponse() makes the rejection
+        // observable ('staged' => false, 'error' => ...).
+        //
+        // NOTE: these still need real DTOs (StagingProduct / StagingCoupon /
+        // StagingShipment exist; there is no tax DTO). Until then these paths
+        // fail loudly rather than silently.
+        $response = $this->invokeStagingCapability('STAGE_ENTITY', $hookData);
+        return $this->mergeStagingResponse($hookData, $response);
     }
 
     /**
@@ -672,8 +772,22 @@ class hooks_ksf_FA_Woocommerce extends hooks
             'status' => 'staged',
             'raw_json' => json_encode($shippingData),
         ]);
-        \hook_invoke_all('STAGE_ENTITY', $hookData);
-        return $hookData;
+        // Dispatched by capability so the stager's response is not discarded.
+        //
+        // These four were hook_invoke_all() broadcasts of a RAW ARRAY, but ISU's
+        // STAGE_ENTITY responder REQUIRES a \Ksfraser\StagingDto\StagingEntity
+        // instance and rejects anything else with
+        // 'stageEntity requires a StagingEntity DTO instance'. Because a
+        // broadcast is fire-and-forget, that rejection was thrown away and the
+        // method returned as if it had staged. Routing through
+        // invokeStagingCapability()/mergeStagingResponse() makes the rejection
+        // observable ('staged' => false, 'error' => ...).
+        //
+        // NOTE: these still need real DTOs (StagingProduct / StagingCoupon /
+        // StagingShipment exist; there is no tax DTO). Until then these paths
+        // fail loudly rather than silently.
+        $response = $this->invokeStagingCapability('STAGE_ENTITY', $hookData);
+        return $this->mergeStagingResponse($hookData, $response);
     }
 
     /**
@@ -692,7 +806,21 @@ class hooks_ksf_FA_Woocommerce extends hooks
             'status' => 'staged',
             'raw_json' => json_encode($inventoryData),
         ]);
-        \hook_invoke_all('STAGE_ENTITY', $hookData);
-        return $hookData;
+        // Dispatched by capability so the stager's response is not discarded.
+        //
+        // These four were hook_invoke_all() broadcasts of a RAW ARRAY, but ISU's
+        // STAGE_ENTITY responder REQUIRES a \Ksfraser\StagingDto\StagingEntity
+        // instance and rejects anything else with
+        // 'stageEntity requires a StagingEntity DTO instance'. Because a
+        // broadcast is fire-and-forget, that rejection was thrown away and the
+        // method returned as if it had staged. Routing through
+        // invokeStagingCapability()/mergeStagingResponse() makes the rejection
+        // observable ('staged' => false, 'error' => ...).
+        //
+        // NOTE: these still need real DTOs (StagingProduct / StagingCoupon /
+        // StagingShipment exist; there is no tax DTO). Until then these paths
+        // fail loudly rather than silently.
+        $response = $this->invokeStagingCapability('STAGE_ENTITY', $hookData);
+        return $this->mergeStagingResponse($hookData, $response);
     }
 }
