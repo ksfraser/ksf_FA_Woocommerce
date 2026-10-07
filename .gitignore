@@ -8,3 +8,5 @@
 *.swo
 *~
 coverage.txt
+
+*.backup
