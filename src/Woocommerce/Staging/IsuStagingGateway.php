@@ -16,7 +16,46 @@ namespace ksfraser\FrontAccounting\Woocommerce\Staging;
  */
 class IsuStagingGateway
 {
-    private const HOOK_MODULE = 'ksf_FA_ImportStagingProcessing';
+    /**
+     * Staging capabilities, dispatched NOT by module name.
+     *
+     * This class previously sent every call with
+     * hook_invoke(self::HOOK_MODULE, ...), hardcoding Woo's choice of stager.
+     * A replacement stager then could not take over without editing Woo, and
+     * Woo would keep silently writing to the old one.
+     *
+     * hook_invoke_first is the right dispatcher, not hook_invoke_all: staging
+     * is a request/response round trip (the caller needs the staging ID back)
+     * with a single owner. A module that merely OBSERVES STAGE_ENTITY and
+     * returns null must not intercept the call.
+     */
+    private const CAP_STAGE_ENTITY = 'STAGE_ENTITY';
+    private const CAP_RESPOND = 'respondToCapabilityRequest';
+
+    /**
+     * Invoke a staging capability, tolerating either dispatcher being present.
+     *
+     * @param string      $capability
+     * @param mixed       $data Payload by reference; a responder may replace it
+     * @param array|null  $opts
+     * @return array|null
+     */
+    private function invokeCapability(string $capability, &$data, $opts = null)
+    {
+        if (function_exists('hook_invoke_first')) {
+            return hook_invoke_first($capability, $data, $opts);
+        }
+
+        // Older FA, or a stripped test harness.
+        if (function_exists('hook_invoke_all')) {
+            $merged = hook_invoke_all($capability, $data, $opts);
+            if (is_array($merged) && isset($merged[0]) && is_array($merged[0])) {
+                return $merged[0];
+            }
+        }
+
+        return null;
+    }
 
     /**
      * Stage a WooCommerce customer via ISU hooks.
@@ -26,11 +65,11 @@ class IsuStagingGateway
      */
     public function stageCustomer(array $customerData): int
     {
-        if (!function_exists('hook_invoke')) {
+        if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
             return 0;
         }
         $data = [];
-        hook_invoke(self::HOOK_MODULE, 'respondToCapabilityRequest', $data, [
+        $this->invokeCapability(self::CAP_RESPOND, $data, [
             'request' => 'staging:stageCustomer',
             'source' => 'woocommerce',
             'customer' => $customerData,
@@ -50,12 +89,12 @@ class IsuStagingGateway
      */
     public function getStagedCustomers(array $filters = []): array
     {
-        if (!function_exists('hook_invoke')) {
+        if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
             return [];
         }
         $params = array_merge(['source' => 'woocommerce'], $filters);
         $data = ['filters' => $params];
-        hook_invoke(self::HOOK_MODULE, 'respondToCapabilityRequest', $data, [
+        $this->invokeCapability(self::CAP_RESPOND, $data, [
             'request' => 'staging:getStagedCustomers',
             'filters' => $params,
         ]);
@@ -70,11 +109,11 @@ class IsuStagingGateway
      */
     public function getCustomerById(int $id): ?array
     {
-        if (!function_exists('hook_invoke')) {
+        if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
             return null;
         }
         $data = ['id' => $id, 'entity_type' => 'customer'];
-        hook_invoke(self::HOOK_MODULE, 'respondToCapabilityRequest', $data, [
+        $this->invokeCapability(self::CAP_RESPOND, $data, [
             'request' => 'staging:getById',
             'id' => $id,
             'entity_type' => 'customer',
@@ -91,7 +130,7 @@ class IsuStagingGateway
      */
     public function stageOrder(array $orderData, array $lineItems = []): int
     {
-        if (!function_exists('hook_invoke')) {
+        if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
             return 0;
         }
 
@@ -126,7 +165,17 @@ class IsuStagingGateway
         );
 
         $data = $dto;
-        hook_invoke(self::HOOK_MODULE, 'STAGE_ENTITY', $data);
+        $this->invokeCapability(self::CAP_STAGE_ENTITY, $data);
+
+        // A DTO-input responder REPLACES $data wholesale with a response array
+        // (it cannot write offsets onto a DTO). If no module claims STAGE_ENTITY,
+        // or the responder declines, $data is still the DTO and reading offsets
+        // off it is a fatal -- "Cannot use object of type ... as array".
+        // Returning 0 keeps a declined/absent stager a soft failure, consistent
+        // with the other methods here.
+        if (!is_array($data)) {
+            return 0;
+        }
 
         if (!empty($data['success']) && isset($data['result']['stagingId'])) {
             return (int)$data['result']['stagingId'];
@@ -142,11 +191,11 @@ class IsuStagingGateway
      */
     public function getById(int $id): ?array
     {
-        if (!function_exists('hook_invoke')) {
+        if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
             return null;
         }
         $data = ['id' => $id, 'entity_type' => 'transaction'];
-        hook_invoke(self::HOOK_MODULE, 'respondToCapabilityRequest', $data, [
+        $this->invokeCapability(self::CAP_RESPOND, $data, [
             'request' => 'staging:getById',
             'id' => $id,
             'entity_type' => 'transaction',
@@ -167,7 +216,7 @@ class IsuStagingGateway
         ?string $fromDate = null,
         ?string $toDate = null
     ): array {
-        if (!function_exists('hook_invoke')) {
+        if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
             return [];
         }
         $filters = ['status' => $status, 'source' => 'woocommerce'];
@@ -178,7 +227,7 @@ class IsuStagingGateway
             $filters['to_date'] = $toDate;
         }
         $data = ['filters' => $filters];
-        hook_invoke(self::HOOK_MODULE, 'respondToCapabilityRequest', $data, [
+        $this->invokeCapability(self::CAP_RESPOND, $data, [
             'request' => 'staging:getStagedTransactions',
             'filters' => $filters,
         ]);
@@ -192,11 +241,11 @@ class IsuStagingGateway
      */
     public function getStagedOrders(): array
     {
-        if (!function_exists('hook_invoke')) {
+        if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
             return [];
         }
         $data = ['filters' => ['source' => 'woocommerce']];
-        hook_invoke(self::HOOK_MODULE, 'respondToCapabilityRequest', $data, [
+        $this->invokeCapability(self::CAP_RESPOND, $data, [
             'request' => 'staging:getStagedTransactions',
             'filters' => ['source' => 'woocommerce'],
         ]);
@@ -213,14 +262,14 @@ class IsuStagingGateway
      */
     public function updateStatus(int $id, string $status, array $extraFields = []): void
     {
-        if (!function_exists('hook_invoke')) {
+        if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
             return;
         }
         if (!empty($extraFields)) {
             $this->updateFields($id, $extraFields);
         }
         $data = ['id' => $id, 'status' => $status];
-        hook_invoke(self::HOOK_MODULE, 'respondToCapabilityRequest', $data, [
+        $this->invokeCapability(self::CAP_RESPOND, $data, [
             'request' => 'staging:updateStatus',
             'id' => $id,
             'status' => $status,
@@ -236,11 +285,11 @@ class IsuStagingGateway
      */
     public function updateFields(int $id, array $fields): void
     {
-        if (!function_exists('hook_invoke')) {
+        if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
             return;
         }
         $data = ['id' => $id, 'fields' => $fields, 'entity_type' => 'transaction'];
-        hook_invoke(self::HOOK_MODULE, 'respondToCapabilityRequest', $data, [
+        $this->invokeCapability(self::CAP_RESPOND, $data, [
             'request' => 'staging:updateFields',
             'id' => $id,
             'fields' => $fields,
@@ -256,11 +305,11 @@ class IsuStagingGateway
      */
     public function getLineItems(int $stagingId): array
     {
-        if (!function_exists('hook_invoke')) {
+        if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
             return [];
         }
         $data = ['staging_id' => $stagingId];
-        hook_invoke(self::HOOK_MODULE, 'respondToCapabilityRequest', $data, [
+        $this->invokeCapability(self::CAP_RESPOND, $data, [
             'request' => 'staging:getItemsByTransaction',
             'staging_id' => $stagingId,
         ]);
@@ -275,11 +324,11 @@ class IsuStagingGateway
      */
     public function getStatusCounts(?string $source = null): array
     {
-        if (!function_exists('hook_invoke')) {
+        if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
             return [];
         }
         $data = ['source' => $source];
-        hook_invoke(self::HOOK_MODULE, 'respondToCapabilityRequest', $data, [
+        $this->invokeCapability(self::CAP_RESPOND, $data, [
             'request' => 'staging:getStatusCounts',
             'source' => $source,
         ]);

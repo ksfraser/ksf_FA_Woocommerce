@@ -3,7 +3,7 @@
 This document describes the customer matching algorithm used by the WooCommerce module's `CustomerStaging` class. It is more sophisticated than the generic `MatchingService::matchByCustomer()` in `ksf_FA_ImportStagingProcessing` and should be examined for adoption into the generic service.
 
 ## Source
-`src/Ksfraser/frontaccounting/Woocommerce/Staging/CustomerStaging.php` — methods `findMatches()` and `calculateMatchScore()`
+`src/Woocommerce/Staging/CustomerStaging.php` — methods `findMatches()` and `calculateMatchScore()`
 
 ## Overview
 Matches staged WooCommerce customer data against existing FA `debtors_master` + `branches` records. Returns a sorted list of candidates each with a 0–100 confidence score.

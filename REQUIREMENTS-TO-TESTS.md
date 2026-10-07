@@ -117,7 +117,7 @@ REQ-TEST-004: Tests use proper mocking for dependencies
 
 ### File Structure Requirements
 REQ-STRUCT-001: Module follows standard FA module structure with hooks.php, public/, admin/, sql/
-REQ-STRUCT-002: Source code organized in src/Ksfraser/frontaccounting/Woocommerce/ sub-namespaces
+REQ-STRUCT-002: Source code organized in src/Woocommerce/ sub-namespaces
 REQ-STRUCT-003: Tests organized in tests/Unit/ with bootstrap.php
 REQ-STRUCT-004: Composer.json includes dependency on ksfraser/ksf-workflow
 REQ-STRUCT-005: Documentation provided in AGENTS-TECH.md

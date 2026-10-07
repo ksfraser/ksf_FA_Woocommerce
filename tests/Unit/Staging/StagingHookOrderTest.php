@@ -37,7 +37,13 @@ class StagingHookOrderTest extends TestCase
 
         $lastCall = end($calls);
         list($ext, $method, $data, $opts) = $lastCall;
-        $this->assertEquals('ksf_FA_ImportStagingProcessing', $ext);
+        // Dispatch is BY CAPABILITY: no stager module may be named. The double
+        // tags a capability dispatch '(first)'.
+        $this->assertSame(
+            '(first)',
+            $ext,
+            'staging must be dispatched by capability, not to a named stager module'
+        );
         $this->assertEquals('respondToCapabilityRequest', $method);
         $this->assertEquals('staging:stageCustomer', $opts['request']);
     }
@@ -55,7 +61,13 @@ class StagingHookOrderTest extends TestCase
 
         $lastCall = end($calls);
         list($ext, $method, $data, $opts) = $lastCall;
-        $this->assertEquals('ksf_FA_ImportStagingProcessing', $ext);
+        // Dispatch is BY CAPABILITY: no stager module may be named. The double
+        // tags a capability dispatch '(first)'.
+        $this->assertSame(
+            '(first)',
+            $ext,
+            'staging must be dispatched by capability, not to a named stager module'
+        );
         $this->assertEquals('STAGE_ENTITY', $method);
     }
 
@@ -68,7 +80,13 @@ class StagingHookOrderTest extends TestCase
 
         $lastCall = end($calls);
         list($ext, $method, $data, $opts) = $lastCall;
-        $this->assertEquals('ksf_FA_ImportStagingProcessing', $ext);
+        // Dispatch is BY CAPABILITY: no stager module may be named. The double
+        // tags a capability dispatch '(first)'.
+        $this->assertSame(
+            '(first)',
+            $ext,
+            'staging must be dispatched by capability, not to a named stager module'
+        );
         $this->assertEquals('respondToCapabilityRequest', $method);
         $this->assertEquals('staging:getStagedTransactions', $opts['request']);
     }
