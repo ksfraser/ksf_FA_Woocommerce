@@ -42,19 +42,21 @@ class IsuStagingGateway
      */
     private function invokeCapability(string $capability, &$data, $opts = null)
     {
-        if (function_exists('hook_invoke_first')) {
-            return hook_invoke_first($capability, $data, $opts);
+        // No hook_invoke_all fallback. A broadcast cannot stand in for a
+        // request/response capability: its return is the array_merge_recursive()
+        // of every provider's reply, not one response, so unwrapping $merged[0]
+        // silently picked whichever provider happened to be first in the
+        // registry rather than the one that answered. For STAGE_ENTITY it is
+        // worse still -- the argument is a DTO and a DTO-input responder
+        // REPLACES $data wholesale.
+        //
+        // FA 2.4.3's includes/hooks.inc has provided hook_invoke_first() since
+        // 2.3, so this path was unreachable in production anyway.
+        if (!function_exists('hook_invoke_first')) {
+            return null;
         }
 
-        // Older FA, or a stripped test harness.
-        if (function_exists('hook_invoke_all')) {
-            $merged = hook_invoke_all($capability, $data, $opts);
-            if (is_array($merged) && isset($merged[0]) && is_array($merged[0])) {
-                return $merged[0];
-            }
-        }
-
-        return null;
+        return hook_invoke_first($capability, $data, $opts);
     }
 
     /**
