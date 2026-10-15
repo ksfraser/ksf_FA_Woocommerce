@@ -139,5 +139,50 @@ if (!function_exists('hook_invoke')) {
     }
 }
 
+// hook_invoke_first test double — production code now dispatches by CAPABILITY,
+// so there is no $ext argument and the scripted-reply key is the bare method.
+if (!function_exists('hook_invoke_first')) {
+    /**
+     * Mirrors FA semantics: walk the scripted providers in order, stop at the
+     * first non-null reply; a provider that declines leaves $data untouched.
+     *
+     * @param string $method
+     * @param mixed  $data
+     * @param array|null $opts
+     * @return array|null
+     */
+    function hook_invoke_first($method, &$data, $opts = null)
+    {
+        $GLOBALS['ksf_test_hook_calls'][] = ['(first)', $method, $data, $opts];
+
+        $providers = isset($GLOBALS['ksf_test_invoke_providers'][$method])
+            ? $GLOBALS['ksf_test_invoke_providers'][$method]
+            : ['ksf_FA_ImportStagingProcessing'];
+
+        foreach ($providers as $provider) {
+            $key   = $provider . '::' . $method;
+            $reply = null;
+
+            if (isset($GLOBALS['ksf_test_invoke_writes'][$key])) {
+                $reply = $GLOBALS['ksf_test_invoke_writes'][$key];
+            } elseif (isset($GLOBALS['ksf_test_invoke_writes'][$method])) {
+                $reply = $GLOBALS['ksf_test_invoke_writes'][$method];
+            }
+
+            if ($reply !== null) {
+                $data = $reply;
+
+                if (isset($GLOBALS['ksf_test_invoke_returns'][$key])) {
+                    return $GLOBALS['ksf_test_invoke_returns'][$key];
+                }
+
+                return $reply;
+            }
+        }
+
+        return null;
+    }
+}
+
 // Also require the hooks file for testing
 require_once __DIR__ . '/../hooks.php';

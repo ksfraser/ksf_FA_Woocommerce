@@ -12,28 +12,28 @@ Refactored FrontAccounting module for bidirectional sync with WooCommerce. Uses 
 
 | Component | Path | Purpose |
 |-----------|------|---------|
-| `WooRestClient` | `src/Ksfraser/frontaccounting/Woocommerce/` | HTTP client wrapper for WooCommerce REST API |
-| `ProductService` | `src/Ksfraser/frontaccounting/Woocommerce/` | Product CRUD operations |
-| `ProductExportService` | `src/Ksfraser/frontaccounting/Woocommerce/` | Export products to WooCommerce |
-| `OrderExporter` | `src/Ksfraser/frontaccounting/Woocommerce/` | Export orders to WooCommerce |
-| `CustomerExporter` | `src/Ksfraser/frontaccounting/Woocommerce/` | Export customers to WooCommerce |
-| `CategoryExporter` | `src/Ksfraser/frontaccounting/Woocommerce/` | Export categories to WooCommerce |
+| `WooRestClient` | `src/Woocommerce/` | HTTP client wrapper for WooCommerce REST API |
+| `ProductService` | `src/Woocommerce/` | Product CRUD operations |
+| `ProductExportService` | `src/Woocommerce/` | Export products to WooCommerce |
+| `OrderExporter` | `src/Woocommerce/` | Export orders to WooCommerce |
+| `CustomerExporter` | `src/Woocommerce/` | Export customers to WooCommerce |
+| `CategoryExporter` | `src/Woocommerce/` | Export categories to WooCommerce |
 
 ### Staging Layer
 
 | Component | Path | Purpose |
 |-----------|------|---------|
-| `CustomerStaging` | `src/Ksfraser/frontaccounting/Woocommerce/Staging/` | Stage WooCommerce customers for review |
-| `OrderStaging` | `src/Ksfraser/frontaccounting/Woocommerce/Staging/` | Stage WooCommerce orders with payment extraction |
+| `CustomerStaging` | `src/Woocommerce/Staging/` | Stage WooCommerce customers for review |
+| `OrderStaging` | `src/Woocommerce/Staging/` | Stage WooCommerce orders with payment extraction |
 
 ### Workflow Engine
 
 | Component | Path | Purpose |
 |-----------|------|---------|
-| `WooSyncStateMachine` | `src/Ksfraser/frontaccounting/Woocommerce/Workflow/` | Module-specific state machine |
-| `WorkflowStatusInterface` | `src/Ksfraser/frontaccounting/Woocommerce/Workflow/Status/` | Generic workflow status contract |
-| `StagingStatusInterface` | `src/Ksfraser/frontaccounting/Woocommerce/Workflow/Status/` | Staging-specific statuses |
-| `StateMachineInterface` | `src/Ksfraser/frontaccounting/Woocommerce/Workflow/StateMachine/` | State machine contract |
+| `WooSyncStateMachine` | `src/Woocommerce/Workflow/` | Module-specific state machine |
+| `WorkflowStatusInterface` | `src/Woocommerce/Workflow/Status/` | Generic workflow status contract |
+| `StagingStatusInterface` | `src/Woocommerce/Workflow/Status/` | Staging-specific statuses |
+| `StateMachineInterface` | `src/Woocommerce/Workflow/StateMachine/` | State machine contract |
 
 ### Data Transfer Objects
 
@@ -47,13 +47,13 @@ Refactored FrontAccounting module for bidirectional sync with WooCommerce. Uses 
 
 | Component | Path | Purpose |
 |-----------|------|---------|
-| `SyncDao` | `src/Ksfraser/frontaccounting/Woocommerce/Dao/` | CRUD for sync mappings and audit logs |
+| `SyncDao` | `src/Woocommerce/Dao/` | CRUD for sync mappings and audit logs |
 
 ### UI Layer
 
 | Component | Path | Purpose |
 |-----------|------|---------|
-| `ImportExportDispatcher` | `src/Ksfraser/frontaccounting/Woocommerce/UI/` | Action dispatcher for import/export operations |
+| `ImportExportDispatcher` | `src/Woocommerce/UI/` | Action dispatcher for import/export operations |
 
 ## Database Schema
 
@@ -168,7 +168,7 @@ export_woocommerce/
 │   └── import_customers.php  # Customer staging review
 ├── sql/
 │   └── schema.sql            # Database schema
-├── src/Ksfraser/frontaccounting/Woocommerce/
+├── src/Woocommerce/
 │   ├── Staging/              # Staging services
 │   ├── Workflow/             # State machine
 │   ├── Dao/                  # Data access
