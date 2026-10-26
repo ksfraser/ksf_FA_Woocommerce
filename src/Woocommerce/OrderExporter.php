@@ -40,6 +40,7 @@ class OrderExporter
      * Constructor
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-003 Module uses Dependency Injection for service dependencies
      * @param WooRestClientInterface $restClient
      * @param LoggerInterface $logger
      * @param DatabaseInterface $db
@@ -58,6 +59,7 @@ class OrderExporter
      * Get all orders from WooCommerce
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $filters
      * @return array
      */
@@ -81,6 +83,7 @@ class OrderExporter
      * Get a single order by ID
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param int $orderId
      * @return array|null
      */
@@ -101,6 +104,7 @@ class OrderExporter
      * Update order status in WooCommerce
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param int $orderId
      * @param string $status
      * @return array|null
@@ -124,6 +128,7 @@ class OrderExporter
      * Import orders to FrontAccounting
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $filters
      * @return array Statistics
      */
@@ -154,6 +159,7 @@ class OrderExporter
      * (or an empty page is returned).
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $filters
      * @return array All orders across pages
      */
@@ -187,6 +193,7 @@ class OrderExporter
      * Import single order to FrontAccounting
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $order
      * @return bool
      */
@@ -242,6 +249,7 @@ class OrderExporter
      *
      * @param array $payload Event payload
      * @return void
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      */
     private function broadcastOrderImported(array $payload): void
     {
@@ -268,6 +276,7 @@ class OrderExporter
      *
      * @param array $order WooCommerce order
      * @return string Date in Y-m-d format
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      */
     private function extractOrderDate(array $order): string
     {
@@ -282,6 +291,7 @@ class OrderExporter
      * Extract customer data from WooCommerce order
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @param array $order
      * @return array
      */
@@ -313,6 +323,7 @@ class OrderExporter
      * Import customer data from WooCommerce order
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @param array $order
      * @return array Import result
      */
@@ -358,6 +369,8 @@ class OrderExporter
      * Create FA order from WooCommerce order
      * 
      * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
+     * @BABOK REQ-FA-010 Shipping lines inserted as FA line items on invoices
      * @param array $wooOrder
      * @param int|null $faCustomerId
      * @return array
@@ -387,6 +400,7 @@ class OrderExporter
      * Find or create FA customer
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @param array $customerData
      * @return int FA customer ID
      */
@@ -415,6 +429,7 @@ class OrderExporter
      * Create customer in FrontAccounting
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @param array $customerData
      * @return int New customer ID
      */
@@ -455,6 +470,7 @@ class OrderExporter
      * Update FA customer
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @param int $customerId
      * @param array $customerData
      * @return bool
@@ -696,6 +712,7 @@ class OrderExporter
      * Map WooCommerce order to FA order
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param int $wooOrderId
      * @param int $faOrderNo
      * @return bool
@@ -718,6 +735,7 @@ class OrderExporter
      * Migrates from legacy woo_orders::create_order()
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $orderData
      * @return array|null
      */
@@ -743,6 +761,7 @@ class OrderExporter
      * Migrates from legacy woo_orders::create_orders()
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param bool $onlyNewOnly export orders without woo_id
      * @return array
      */
@@ -781,6 +800,7 @@ class OrderExporter
      * Build WooCommerce order data from FA order data
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $faData
      * @return array
      */
@@ -831,6 +851,7 @@ class OrderExporter
      * Get orders filtered by status
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param string $status
      * @param int $perPage
      * @return array
@@ -846,6 +867,7 @@ class OrderExporter
      * Migrates from legacy woo_orders payment_details handling
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $order
      * @return array
      */
@@ -866,6 +888,7 @@ class OrderExporter
      * Extract line items from WooCommerce order
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $order
      * @return array
      */
@@ -899,6 +922,8 @@ class OrderExporter
      * Extract shipping lines from WooCommerce order
      * 
      * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
+     * @BABOK REQ-FA-010 Shipping lines inserted as FA line items on invoices
      * @param array $order
      * @return array
      */
@@ -925,6 +950,7 @@ class OrderExporter
      * Extract tax lines from WooCommerce order
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $order
      * @return array
      */
@@ -951,6 +977,7 @@ class OrderExporter
      * Extract fee lines from WooCommerce order
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $order
      * @return array
      */
@@ -977,6 +1004,7 @@ class OrderExporter
      * Extract coupon lines from WooCommerce order
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $order
      * @return array
      */
@@ -1001,6 +1029,7 @@ class OrderExporter
      * Extract refunds from WooCommerce order
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $order
      * @return array
      */
@@ -1026,6 +1055,7 @@ class OrderExporter
      * Get order totals summary
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $order
      * @return array
      */
@@ -1049,6 +1079,7 @@ class OrderExporter
      * Update order's WooCommerce ID in FA
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param int $faOrderId
      * @param int $wooOrderId
      * @return bool
@@ -1073,6 +1104,7 @@ class OrderExporter
      * Map WooCommerce order status to FA order status
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param string $wooStatus
      * @return string
      */
@@ -1095,6 +1127,7 @@ class OrderExporter
      * Get table name with prefix
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-004 Module avoids code duplication (DRY principle)
      * @param string $table
      * @return string
      */

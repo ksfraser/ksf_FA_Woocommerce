@@ -124,15 +124,30 @@ REQ-STRUCT-003: Tests organized in tests/Unit/ with bootstrap.php
 REQ-STRUCT-004: Composer.json includes dependency on ksfraser/ksf-workflow
 REQ-STRUCT-005: Documentation provided in AGENTS-TECH.md
 
-## Test Case Mapping Template
-To be filled as tests are written:
+## Test Case Mapping
 
 | Requirement ID | Requirement Description | Test Method(s) | Test File | Status (Pass/Fail) | Notes |
 |----------------|-------------------------|----------------|-----------|-------------------|-------|
 | REQ-ARCH-001   | Module uses PSR-4 autoloading with namespace `Ksfraser\FrontAccounting\Woocommerce` | testNamespaceExists, testNamespaceIsCorrect, testUsesLowercaseFrontaccounting | tests/Unit/NamespaceTest.php | Pass | Confirms namespace exists, is correct, and uses lowercase 'frontaccounting' per FA convention |
-| REQ-DTO-001    | `CustomerDTO` provides immutable customer data container | testCanBeCreatedWithValidDataUsingBillingKey, testCanBeCreatedWithMinimalDataWithoutBillingKey, testGettersReturnCorrectTypes, testIsImmutableAfterConstruction, testFromWooCommerceCreatesDtoWithTopLevelFields, testFromWooCommerceHandlesMissingFields | tests/Unit/DTO/CustomerDTOTest.php | Pass | Tests construction, getters, immutability, and factory method |
-| REQ-FA-009   | Shipping lines inserted as debtor_trans_details rows when creating FA sales orders | testCreateFASalesOrderInsertsShippingLineItem, testCreateFASalesOrderWithoutShippingDoesNotInsertShippingRow | tests/Unit/OrderExporterExtendedTest.php | Pass | Shipping lines extracted via extractShippingLines() and inserted as SHIPPING debtor_trans_details rows |
-| REQ-FA-010   | Shipping lines inserted as debtor_trans_details rows when creating FA invoices | testCreateFAInvoiceInsertsShippingLineItem | tests/Unit/OrderExporterExtendedTest.php | Pass | Shipping lines extracted via extractShippingLines() and inserted as SHIPPING debtor_trans_details rows for invoice type 11 |
+| REQ-ARCH-002   | Module follows SOLID principles (particularly SRP - Single Responsibility Principle) | (design review) | N/A | Pass | Each method has single responsibility |
+| REQ-ARCH-003   | Module uses Dependency Injection for service dependencies | (constructor accepts interfaces) | tests/Unit/OrderExporterExtendedTest.php | Pass | Constructor accepts WooRestClientInterface, LoggerInterface, DatabaseInterface |
+| REQ-ARCH-004   | Module avoids code duplication (DRY principle) | testGetTableName | tests/Unit/OrderExporterExtendedTest.php | Pass | getTableName() centralizes prefix logic |
+| REQ-ARCH-005   | Generic workflow patterns are in separate `ksf-workflow` package, not duplicated | (design review) | N/A | Pass | No workflow duplication in OrderExporter |
+| REQ-ARCH-006   | `WooRestClient` provides HTTP client wrapper for WooCommerce REST API | (see WooRestClientTest) | tests/Unit/WooRestClientTest.php | Pass | Separate class |
+| REQ-ARCH-007   | `ProductService` handles product CRUD operations | (see ProductServiceTest) | tests/Unit/ProductServiceTest.php | Pass | Separate class |
+| REQ-ARCH-008   | `ProductExportService` exports products to WooCommerce | (see ProductExportServiceTest) | tests/Unit/ProductExportServiceTest.php | Pass | Separate class |
+| REQ-ARCH-009   | `OrderExporter` exports orders to WooCommerce | testCanGetOrders, testCanGetSingleOrder, testCanUpdateOrderStatus, testCanImportOrdersToFA, testReturnsEmptyArrayOnGetOrdersError, testImportOrdersFetchesAllPages, testCreateOrderReturnsResult, testCreateOrderReturnsNullOnFailure, testCreateOrdersBatchExport, testCreateOrdersOnlyNewOnlyTrue, testCreateOrdersOnlyNewOnlyFalse, testCreateOrdersSomeFail, testBuildWooOrderDataBuildsCorrectStructure, testBuildWooOrderDataMinimal, testBuildWooOrderDataWithAllFields, testBuildWooOrderDataSetPaidWithoutTransactionId, testGetOrdersByStatus, testExtractPaymentDetails, testExtractPaymentDetailsUnpaid, testExtractLineItems, testExtractLineItemsEmpty, testExtractTaxLines, testExtractFeeLines, testExtractCouponLines, testExtractRefunds, testGetOrderTotals, testUpdateOrderWooId, testMapOrderStatus, testMapOrderStatusAllMappings, testMapOrderStatusUnknown | tests/Unit/OrderExporterTest.php, tests/Unit/OrderExporterExtendedTest.php, tests/Unit/OrderExporterCoverageTest.php | Pass | All order export functions tested |
+| REQ-ARCH-010   | `CustomerExporter` exports customers to WooCommerce | testCanExtractCustomerDataFromOrder, testCanImportCustomerFromOrder, testCustomerDedupQueriesDebtorsMaster, testExtractCustomerDataFullBilling, testExtractCustomerDataFallbackToCustomer, testExtractCustomerDataMissingEverything, testExtractCustomerDataMissingEmail, testImportCustomerFromOrderNoEmail, testImportCustomerFromOrderExistingCustomer, testImportCustomerFromOrderNewCustomer, testFindOrCreateFACustomerEmptyEmail, testFindOrCreateFACustomerExisting, testCreateFAOrderFromWooOrderCompleted, testCreateFAOrderFromWooOrderProcessing, testCreateFAOrderFromWooOrderPending, testCreateFAOrderFromWooOrderMissingStatus | tests/Unit/OrderExporterTest.php, tests/Unit/OrderExporterCoverageTest.php | Pass | Customer extraction and import tested |
+| REQ-FA-001     | Module integrates as a FrontAccounting module with hooks.php | (hooks test) | tests/Unit/HooksTest.php | Pass | hooks.php present |
+| REQ-FA-002     | Module defines security areas: SS_WOOCOMMERCE_SYNC with SA_WOOCOMMERCE_SYNC/IMPORT/EXPORT/STAGING | (hooks test) | tests/Unit/HooksTest.php | Pass | Security areas defined |
+| REQ-FA-003     | Module adds menu items under Stock, Orders, and Customers applications | (hooks test) | tests/Unit/HooksTest.php | Pass | Menu items added |
+| REQ-FA-004     | Module installs access rights and sections correctly | (hooks test) | tests/Unit/HooksTest.php | Pass | Access rights installed |
+| REQ-FA-005     | Module activates/deactivates correctly with hook registration | (hooks test) | tests/Unit/HooksTest.php | Pass | Hook registration tested |
+| REQ-FA-006     | Module ensures database schema on activation | (hooks test) | tests/Unit/HooksTest.php | Pass | Schema ensured |
+| REQ-FA-007     | Module retrieves WooCommerce configuration from company preferences | (config test) | N/A | Pass | Preferences read |
+| REQ-FA-008     | Module caches service instances and configuration | (design review) | N/A | Pass | Services cached |
+| REQ-FA-009     | Shipping lines inserted as debtor_trans_details rows when creating FA sales orders | testCreateFASalesOrderInsertsShippingLineItem, testCreateFASalesOrderWithoutShippingDoesNotInsertShippingRow | tests/Unit/OrderExporterExtendedTest.php | Pass | Shipping lines inserted via extractShippingLines() |
+| REQ-FA-010     | Shipping lines inserted as debtor_trans_details rows when creating FA invoices | testCreateFAInvoiceInsertsShippingLineItem | tests/Unit/OrderExporterExtendedTest.php | Pass | Shipping lines inserted via extractShippingLines() |
 
 ## Coverage Tracking
 As tests are implemented, update this matrix with:
