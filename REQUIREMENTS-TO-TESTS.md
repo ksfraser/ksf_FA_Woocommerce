@@ -83,6 +83,8 @@ REQ-FA-005: Module activates/deactivates correctly with hook registration
 REQ-FA-006: Module ensures database schema on activation
 REQ-FA-007: Module retrieves WooCommerce configuration from company preferences
 REQ-FA-008: Module caches service instances and configuration
+REQ-FA-009: Shipping lines inserted as debtor_trans_details rows when creating FA sales orders
+REQ-FA-010: Shipping lines inserted as debtor_trans_details rows when creating FA invoices
 
 ### Security Requirements
 REQ-SEC-001: `SS_WOOCOMMERCE_SYNC` defined as stock area section (116 << 8)
@@ -129,7 +131,8 @@ To be filled as tests are written:
 |----------------|-------------------------|----------------|-----------|-------------------|-------|
 | REQ-ARCH-001   | Module uses PSR-4 autoloading with namespace `Ksfraser\FrontAccounting\Woocommerce` | testNamespaceExists, testNamespaceIsCorrect, testUsesLowercaseFrontaccounting | tests/Unit/NamespaceTest.php | Pass | Confirms namespace exists, is correct, and uses lowercase 'frontaccounting' per FA convention |
 | REQ-DTO-001    | `CustomerDTO` provides immutable customer data container | testCanBeCreatedWithValidDataUsingBillingKey, testCanBeCreatedWithMinimalDataWithoutBillingKey, testGettersReturnCorrectTypes, testIsImmutableAfterConstruction, testFromWooCommerceCreatesDtoWithTopLevelFields, testFromWooCommerceHandlesMissingFields | tests/Unit/DTO/CustomerDTOTest.php | Pass | Tests construction, getters, immutability, and factory method |
-| ...            |                         |                |           |                   |       |
+| REQ-FA-009   | Shipping lines inserted as debtor_trans_details rows when creating FA sales orders | testCreateFASalesOrderInsertsShippingLineItem, testCreateFASalesOrderWithoutShippingDoesNotInsertShippingRow | tests/Unit/OrderExporterExtendedTest.php | Pass | Shipping lines extracted via extractShippingLines() and inserted as SHIPPING debtor_trans_details rows |
+| REQ-FA-010   | Shipping lines inserted as debtor_trans_details rows when creating FA invoices | testCreateFAInvoiceInsertsShippingLineItem | tests/Unit/OrderExporterExtendedTest.php | Pass | Shipping lines extracted via extractShippingLines() and inserted as SHIPPING debtor_trans_details rows for invoice type 11 |
 
 ## Coverage Tracking
 As tests are implemented, update this matrix with:

@@ -332,4 +332,165 @@ class OrderExporterExtendedTest extends TestCase
         $this->assertEquals(2, $result['created']);
         $this->assertEquals(0, $result['failed']);
     }
+
+    public function testCreateFASalesOrderInsertsShippingLineItem(): void
+    {
+        $wooOrder = [
+            'id' => 123,
+            'number' => 'WC-123',
+            'status' => 'pending',
+            'total' => '115.00',
+            'customer_id' => 456,
+            'line_items' => [
+                ['product_id' => 1, 'quantity' => 2, 'price' => '50.00', 'subtotal' => '100.00', 'total' => '100.00']
+            ],
+            'shipping_lines' => [
+                [
+                    'id' => 10,
+                    'method_id' => 'flat_rate',
+                    'method_title' => 'Flat Rate Shipping',
+                    'total' => '15.00',
+                    'total_tax' => '1.50',
+                ],
+            ],
+            'billing' => [
+                'email' => 'john@example.com',
+                'first_name' => 'John'
+            ]
+        ];
+
+        $this->mockDb->method('query')
+            ->willReturnOnConsecutiveCalls(
+                [], // No existing order mapping
+                [['id' => 999]] // Woo_order_map lookup
+            );
+
+        $executed = [];
+        $this->mockDb->method('execute')
+            ->willReturnCallback(function ($sql) use (&$executed) {
+                $executed[] = $sql;
+                return true;
+            });
+
+        $result = $this->exporter->createFAOrderFromWooOrder($wooOrder);
+
+        $this->assertTrue($result['success']);
+
+        // Verify shipping line was inserted as debtor_trans_details
+        $shippingFound = false;
+        foreach ($executed as $sql) {
+            if (strpos($sql, "debtor_trans_details") !== false
+                && strpos($sql, "10,") !== false // sales order type
+                && strpos($sql, "'SHIPPING'") !== false
+                && strpos($sql, 'Flat Rate Shipping') !== false) {
+                $shippingFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($shippingFound, 'Shipping line should be inserted as debtor_trans_details row');
+    }
+
+    public function testCreateFAInvoiceInsertsShippingLineItem(): void
+    {
+        $wooOrder = [
+            'id' => 124,
+            'number' => 'WC-124',
+            'status' => 'completed',
+            'total' => '115.00',
+            'customer_id' => 456,
+            'line_items' => [
+                ['product_id' => 1, 'quantity' => 2, 'price' => '50.00', 'subtotal' => '100.00', 'total' => '100.00']
+            ],
+            'shipping_lines' => [
+                [
+                    'id' => 11,
+                    'method_id' => 'flat_rate',
+                    'method_title' => 'Flat Rate Shipping',
+                    'total' => '15.00',
+                    'total_tax' => '1.50',
+                ],
+            ],
+            'billing' => [
+                'email' => 'john@example.com',
+                'first_name' => 'John'
+            ]
+        ];
+
+        $this->mockDb->method('query')
+            ->willReturnOnConsecutiveCalls(
+                [], // No existing order mapping
+                [['id' => 999]] // Woo_order_map lookup
+            );
+
+        $executed = [];
+        $this->mockDb->method('execute')
+            ->willReturnCallback(function ($sql) use (&$executed) {
+                $executed[] = $sql;
+                return true;
+            });
+
+        $result = $this->exporter->createFAOrderFromWooOrder($wooOrder);
+
+        $this->assertTrue($result['success']);
+
+        // Verify shipping line was inserted as debtor_trans_details for invoice type (11)
+        $shippingFound = false;
+        foreach ($executed as $sql) {
+            if (strpos($sql, "debtor_trans_details") !== false
+                && strpos($sql, "11,") !== false // invoice type
+                && strpos($sql, "'SHIPPING'") !== false
+                && strpos($sql, 'Flat Rate Shipping') !== false) {
+                $shippingFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($shippingFound, 'Shipping line should be inserted as debtor_trans_details row for invoice');
+    }
+
+    public function testCreateFASalesOrderWithoutShippingDoesNotInsertShippingRow(): void
+    {
+        $wooOrder = [
+            'id' => 125,
+            'number' => 'WC-125',
+            'status' => 'pending',
+            'total' => '100.00',
+            'customer_id' => 456,
+            'line_items' => [
+                ['product_id' => 1, 'quantity' => 2, 'price' => '50.00', 'subtotal' => '100.00', 'total' => '100.00']
+            ],
+            'shipping_lines' => [],
+            'billing' => [
+                'email' => 'john@example.com',
+                'first_name' => 'John'
+            ]
+        ];
+
+        $this->mockDb->method('query')
+            ->willReturnOnConsecutiveCalls(
+                [], // No existing order mapping
+                [['id' => 999]] // Woo_order_map lookup
+            );
+
+        $executed = [];
+        $this->mockDb->method('execute')
+            ->willReturnCallback(function ($sql) use (&$executed) {
+                $executed[] = $sql;
+                return true;
+            });
+
+        $result = $this->exporter->createFAOrderFromWooOrder($wooOrder);
+
+        $this->assertTrue($result['success']);
+
+        // Verify no shipping row was inserted
+        $shippingFound = false;
+        foreach ($executed as $sql) {
+            if (strpos($sql, "debtor_trans_details") !== false
+                && strpos($sql, "'SHIPPING'") !== false) {
+                $shippingFound = true;
+                break;
+            }
+        }
+        $this->assertFalse($shippingFound, 'No shipping line should be inserted when shipping_lines is empty');
+    }
 }

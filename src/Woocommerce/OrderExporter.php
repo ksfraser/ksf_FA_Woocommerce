@@ -7,6 +7,8 @@ namespace ksfraser\FrontAccounting\Woocommerce;
  * Handles exporting orders from WooCommerce to FrontAccounting.
  * 
  * @since 1.0.0
+ * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
+ * @BABOK REQ-FA-010 Shipping lines inserted as FA line items on invoices
  */
 class OrderExporter
 {
@@ -498,6 +500,16 @@ class OrderExporter
      * @param int|null $faCustomerId
      * @return array
      */
+    /**
+     * Create FA sales order from WooCommerce order data.
+     * Inserts product line items and shipping lines into debtor_trans_details.
+     * 
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
+     * @param array $wooOrder WooCommerce order data
+     * @param int|null $faCustomerId FA customer ID
+     * @return array Result with success flag and FA order number
+     */
     private function createFASalesOrder(array $wooOrder, ?int $faCustomerId): array
     {
         $this->logger->info(sprintf('Creating FA sales order for WooCommerce order %d', $wooOrder['id']));
@@ -538,6 +550,23 @@ class OrderExporter
                     $item['total'] > 0 ? (1 - $item['total'] / $item['subtotal']) * 100 : 0
                 ));
             }
+
+            // Insert shipping lines as separate FA line items so shipping
+            // is represented in debtor_trans_details, not just ov_amount.
+            $shippingLines = $this->extractShippingLines($wooOrder);
+            foreach ($shippingLines as $ship) {
+                if ((float)$ship['total'] > 0) {
+                    $this->db->execute(sprintf(
+                        "INSERT INTO %sdebtor_trans_details 
+                         (debtor_trans_no, debtor_trans_type, stock_id, description, unit_price, quantity, discount_percent, standard_cost)
+                         VALUES (%d, 10, 'SHIPPING', '%s', %.6f, 1, 0, 0)",
+                        $prefix,
+                        $transNo,
+                        $this->db->escape($ship['method_title'] ?? _('Shipping')),
+                        (float)$ship['total']
+                    ));
+                }
+            }
             
             $this->logger->info(sprintf('Created FA sales order %d', $transNo));
             return [
@@ -563,6 +592,16 @@ class OrderExporter
      * @param array $wooOrder
      * @param int|null $faCustomerId
      * @return array
+     */
+    /**
+     * Create FA invoice from WooCommerce order data.
+     * Inserts product line items and shipping lines into debtor_trans_details.
+     * 
+     * @since 1.0.0
+     * @BABOK REQ-FA-010 Shipping lines inserted as FA line items on invoices
+     * @param array $wooOrder WooCommerce order data
+     * @param int|null $faCustomerId FA customer ID
+     * @return array Result with success flag and FA order number
      */
     private function createFAInvoice(array $wooOrder, ?int $faCustomerId): array
     {
@@ -604,6 +643,23 @@ class OrderExporter
                     $item['quantity'],
                     $item['total'] > 0 ? (1 - $item['total'] / $item['subtotal']) * 100 : 0
                 ));
+            }
+
+            // Insert shipping lines as separate FA line items so shipping
+            // is represented in debtor_trans_details, not just ov_amount.
+            $shippingLines = $this->extractShippingLines($wooOrder);
+            foreach ($shippingLines as $ship) {
+                if ((float)$ship['total'] > 0) {
+                    $this->db->execute(sprintf(
+                        "INSERT INTO %sdebtor_trans_details 
+                         (debtor_trans_no, debtor_trans_type, stock_id, description, unit_price, quantity, discount_percent, standard_cost)
+                         VALUES (%d, 11, 'SHIPPING', '%s', %.6f, 1, 0, 0)",
+                        $prefix,
+                        $transNo,
+                        $this->db->escape($ship['method_title'] ?? _('Shipping')),
+                        (float)$ship['total']
+                    ));
+                }
             }
             
             if (!empty($paymentDetails['transaction_id'])) {
