@@ -8,11 +8,25 @@ class ProductDataBuilder
     private $db;
     private $logger;
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     * @param DatabaseInterface $db
+     * @param LoggerInterface $logger
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
+
     public function __construct(DatabaseInterface $db, LoggerInterface $logger)
     {
         $this->db = $db;
         $this->logger = $logger;
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     public function build(array $faData): array
     {
@@ -63,6 +77,16 @@ class ProductDataBuilder
         return $data;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     * @param string $stockId
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
+
     public function determineProductType(string $stockId): string
     {
         if (!$this->tableExists('product_hierarchy')) {
@@ -87,6 +111,10 @@ class ProductDataBuilder
 
         return ((int)($result[0]['cnt'] ?? 0)) > 0 ? 'variable' : 'simple';
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     private function addDimensionsAndWeight(string $stockId, array &$data, array $faData): void
     {
@@ -119,6 +147,10 @@ class ProductDataBuilder
             $data['weight'] = (string)$faData['weight'];
         }
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     private function addImages(string $stockId, array &$data): void
     {
@@ -144,6 +176,10 @@ class ProductDataBuilder
             $data['images'] = $images;
         }
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     private function addShippingAttributes(string $stockId, array &$data): void
     {
@@ -183,6 +219,10 @@ class ProductDataBuilder
             }
         }
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     private function addTags(string $stockId, array &$data): void
     {
@@ -213,6 +253,10 @@ class ProductDataBuilder
             $data['tags'] = $tags;
         }
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     private function addCartRules(string $stockId, array &$data): void
     {
@@ -230,6 +274,10 @@ class ProductDataBuilder
             $data['sold_individually'] = true;
         }
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     private function addRelatedProducts(string $stockId, array &$data): void
     {
@@ -274,6 +322,10 @@ class ProductDataBuilder
             $data['cross_sell_ids'] = $crossSellIds;
         }
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     private function addCategories(string $stockId, array &$data): void
     {
@@ -302,6 +354,10 @@ class ProductDataBuilder
             $data['categories'] = [['id' => (int)$mapping[0]['woo_category_id']]];
         }
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     private function addProductIdentifiers(string $stockId, array &$data): void
     {
@@ -329,6 +385,10 @@ class ProductDataBuilder
             }
         }
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     private function getProductAttributes(string $stockId): array
     {
@@ -361,6 +421,10 @@ class ProductDataBuilder
 
         return $attributes;
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     private function tableExists(string $tableName): bool
     {
@@ -368,6 +432,10 @@ class ProductDataBuilder
         $result = $this->db->query("SHOW TABLES LIKE '{$fullTableName}'");
         return !empty($result);
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     private function getTableName(string $table): string
     {

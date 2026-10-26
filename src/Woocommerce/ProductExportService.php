@@ -9,6 +9,7 @@ use ksfraser\FrontAccounting\Woocommerce\Exceptions\WooApiException;
  * Handles exporting products from FrontAccounting to WooCommerce.
  * 
  * @since 1.0.0
+ * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
  */
 class ProductExportService
 {
@@ -16,6 +17,10 @@ class ProductExportService
     private $logger;
     private $db;
     
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     public function __construct(
         WooRestClientInterface $restClient,
@@ -26,6 +31,10 @@ class ProductExportService
         $this->logger = $logger;
         $this->db = $db;
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     public function buildProductData(array $faData): array
     {
@@ -91,7 +100,11 @@ class ProductExportService
     
     /**
      * Add dimensions and weight from product_dimensions / stock_master
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     private function addDimensionsAndWeight(string $stockId, array $faData, array &$data): void
     {
         // Fallback to stock_master weight if present in source data
@@ -128,7 +141,11 @@ class ProductExportService
     
     /**
      * Add images from product_media table
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     private function addImages(string $stockId, array &$data): void
     {
         if (!$this->tableExists('product_media')) {
@@ -156,7 +173,11 @@ class ProductExportService
     
     /**
      * Add shipping attributes
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     private function addShippingAttributes(string $stockId, array &$data): void
     {
         if (!$this->tableExists('product_shipping_attributes')) {
@@ -206,7 +227,11 @@ class ProductExportService
      * @since 1.0.0
      * @param string $stockId
      * @param array $data Reference to the WooCommerce payload
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     private function addTags(string $stockId, array &$data): void
     {
         if (!$this->tableExists('product_tags') || !$this->tableExists('product_tag_assignments')) {
@@ -243,7 +268,11 @@ class ProductExportService
      * @since 1.0.0
      * @param string $stockId
      * @param array $data Reference to the WooCommerce payload
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     private function addCartRules(string $stockId, array &$data): void
     {
         if (!$this->tableExists('product_cart_rules')) {
@@ -270,7 +299,11 @@ class ProductExportService
      * @since 1.0.0
      * @param string $stockId
      * @param array $data Reference to the WooCommerce payload
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     private function addRelatedProducts(string $stockId, array &$data): void
     {
         if (!$this->tableExists('product_related_products')) {
@@ -323,7 +356,11 @@ class ProductExportService
      * @since 1.0.0
      * @param string $stockId
      * @param array $data Reference to the WooCommerce payload
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     private function addCategories(string $stockId, array &$data): void
     {
         if (!$this->tableExists('woo_category_map')) {
@@ -354,7 +391,11 @@ class ProductExportService
     
     /**
      * Check if product_hierarchy table exists
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     private function productHierarchyTableExists(): bool
     {
         return $this->tableExists('product_hierarchy');
@@ -362,7 +403,11 @@ class ProductExportService
     
     /**
      * Get product identifiers (UPC, EAN, etc.)
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     private function addProductIdentifiers(string $stockId, array &$data): void
     {
         if (!$this->tableExists('product_identifiers')) {
@@ -392,7 +437,11 @@ class ProductExportService
     
     /**
      * Check if a table exists
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     private function tableExists(string $tableName): bool
     {
         $fullTableName = $this->getTableName($tableName);
@@ -406,7 +455,11 @@ class ProductExportService
      * @since 1.0.0
      * @param array $faData
      * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     private function determineProductType(array $faData): string
     {
         $stockId = $faData['stock_id'];
@@ -447,7 +500,11 @@ class ProductExportService
      * @since 1.0.0
      * @param string $stockId FA stock_id
      * @return string 'simple' | 'variable' | 'variation'
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     public function productType(string $stockId): string
     {
         return $this->determineProductType(['stock_id' => $stockId]);
@@ -459,7 +516,11 @@ class ProductExportService
      * @since 1.0.0
      * @param string $stockId
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     private function getProductAttributes(string $stockId): array
     {
         $attributes = [];
@@ -495,6 +556,10 @@ class ProductExportService
 
         return $attributes;
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     public function exportProduct(array $productData): array
     {
@@ -512,6 +577,10 @@ class ProductExportService
 
         return $this->restClient->post('products', $wooData);
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     public function exportVariableProduct(string $parentSku, array $variations): array
     {
@@ -613,17 +682,29 @@ class ProductExportService
             'variations' => $savedVariations
         ];
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     public function getProducts(): array
     {
         return $this->restClient->get('products', []);
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     public function findProductBySku(string $sku): ?array
     {
         $results = $this->restClient->get('products', ['sku' => $sku]);
         return $results[0] ?? null;
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     public function deleteProductBySku(string $sku): array
     {
@@ -633,6 +714,10 @@ class ProductExportService
         }
         return $this->restClient->delete('products/' . $product['id'], []);
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     public function recodeSku(string $oldSku, string $newSku): bool
     {
@@ -654,6 +739,10 @@ class ProductExportService
             return false;
         }
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     public function exportAllSimpleProducts(int $limit = 0): array
     {
@@ -693,6 +782,10 @@ class ProductExportService
             'total' => count($products),
         ];
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     public function recodeAllSkus(): array
     {
@@ -715,6 +808,10 @@ class ProductExportService
             'total' => count($skuMap),
         ];
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     public function addProductAttributes(int $productId, array $attributes): bool
     {
@@ -730,6 +827,10 @@ class ProductExportService
             return false;
         }
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
+     */
 
     public function createVariation(int $productId, array $variationData): array
     {
@@ -748,7 +849,11 @@ class ProductExportService
      * @since 1.0.0
      * @param bool $debugMode Limit to 1 item for debugging
      * @return array Result with updated count
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     public function updateSimpleProducts(bool $debugMode = false): array
     {
         $this->logger->info('Starting update of modified simple products');
@@ -812,7 +917,11 @@ class ProductExportService
      * @since 1.0.0
      * @param string $stockId FA stock ID
      * @return array|null Matched WooCommerce product data or null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     public function matchProduct(string $stockId): ?array
     {
         $this->logger->info(sprintf('Matching product with stock_id: %s', $stockId));
@@ -837,7 +946,11 @@ class ProductExportService
      * @since 1.0.0
      * @param string $stockId
      * @return array Array of tag data for WooCommerce
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     public function productTags(string $stockId): array
     {
         if (!$this->tableExists('stock_item_tags')) {
@@ -873,7 +986,11 @@ class ProductExportService
      * @since 1.0.0
      * @param string $stockId
      * @return array Array of default attribute mappings
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     public function productDefaultAttributes(string $stockId): array
     {
         if (!$this->productHierarchyTableExists()) {
@@ -913,7 +1030,11 @@ class ProductExportService
      * @since 1.0.0
      * @param string $parentStockId Parent product stock ID
      * @return array Array of variation data
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     public function productVariations(string $parentStockId): array
     {
         if (!$this->productHierarchyTableExists()) {
@@ -958,7 +1079,11 @@ class ProductExportService
      * @since 1.0.0
      * @param string $stockId
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     private function getVariationAttributes(string $stockId): array
     {
         if (!$this->productHierarchyTableExists()) {
@@ -999,7 +1124,11 @@ class ProductExportService
      * @param int $wooId
      * @param string $lastUpdate
      * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     public function updateWooTable(string $stockId, int $wooId, string $lastUpdate): bool
     {
         try {
@@ -1045,7 +1174,11 @@ class ProductExportService
      * @since 1.0.0
      * @param string $sku
      * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     public function recodeSkuForExport(string $sku): string
     {
         return str_replace('/', '_', $sku);
@@ -1059,7 +1192,11 @@ class ProductExportService
      * @since 1.0.0
      * @param string $sku
      * @return array|null Full product data or null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     public function getProductBySku(string $sku): ?array
     {
         $this->logger->info(sprintf('Getting full product data for SKU: %s', $sku));
@@ -1086,7 +1223,11 @@ class ProductExportService
      * @since 1.0.0
      * @param bool $debugMode
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     public function exportAllProducts(bool $debugMode = false): array
     {
         $this->logger->info('Starting full product export (new + updates)');
@@ -1108,7 +1249,11 @@ class ProductExportService
      *
      * @since 1.0.0
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     public function exportAllVariableProducts(): array
     {
         $this->logger->info('Starting export of all variable products');
@@ -1159,7 +1304,11 @@ class ProductExportService
      * @since 1.0.0
      * @param string $table
      * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-008 ProductExportService exports products to WooCommerce
      */
+
     private function getTableName(string $table): string
     {
         $prefix = $this->db->getPrefix();

@@ -6,16 +6,32 @@ namespace ksfraser\FrontAccounting\Woocommerce;
 use Automattic\WooCommerce\Client;
 use ksfraser\FrontAccounting\Woocommerce\Exceptions\WooApiException;
 
+/**
+ * WooCommerce REST Client
+ * 
+ * Implements WooRestClientInterface using the Automattic WooCommerce PHP SDK.
+ * 
+ * @since 1.0.0
+ * @BABOK REQ-ARCH-006 WooRestClient provides HTTP client wrapper for WooCommerce REST API
+ */
 class WooRestClient implements WooRestClientInterface
 {
     private $client;
     private $logger;
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-006 WooRestClient provides HTTP client wrapper for WooCommerce REST API
+     */
 
     public function __construct(Client $client, LoggerInterface $logger)
     {
         $this->client = $client;
         $this->logger = $logger;
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-006 WooRestClient provides HTTP client wrapper for WooCommerce REST API
+     */
 
     public function get(string $endpoint, array $params = []): array
     {
@@ -28,6 +44,10 @@ class WooRestClient implements WooRestClientInterface
             throw new WooApiException('WooCommerce API error: ' . $e->getMessage(), 0, $e);
         }
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-006 WooRestClient provides HTTP client wrapper for WooCommerce REST API
+     */
 
     public function post(string $endpoint, array $data = []): array
     {
@@ -40,6 +60,10 @@ class WooRestClient implements WooRestClientInterface
             throw new WooApiException('WooCommerce API error: ' . $e->getMessage(), 0, $e);
         }
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-006 WooRestClient provides HTTP client wrapper for WooCommerce REST API
+     */
 
     public function put(string $endpoint, array $data = []): array
     {
@@ -52,6 +76,10 @@ class WooRestClient implements WooRestClientInterface
             throw new WooApiException('WooCommerce API error: ' . $e->getMessage(), 0, $e);
         }
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-006 WooRestClient provides HTTP client wrapper for WooCommerce REST API
+     */
 
     public function delete(string $endpoint, array $params = []): array
     {
@@ -64,6 +92,10 @@ class WooRestClient implements WooRestClientInterface
             throw new WooApiException('WooCommerce API error: ' . $e->getMessage(), 0, $e);
         }
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-006 WooRestClient provides HTTP client wrapper for WooCommerce REST API
+     */
 
     private function convertToArray($data)
     {

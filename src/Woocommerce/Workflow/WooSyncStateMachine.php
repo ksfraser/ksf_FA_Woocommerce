@@ -24,6 +24,11 @@ use ksfraser\FrontAccounting\Woocommerce\Workflow\StateMachine\StateMachineTrait
  * - Ksfraser\Workflow\StateMachine\StateMachineInterface
  * 
  * @since 1.0.0
+ * @BABOK REQ-WORKFLOW-001 `WooSyncStateMachine` implements module-specific state machine
+ * @BABOK REQ-WORKFLOW-002 Workflow uses generic interfaces from `ksf-workflow` package
+ * @BABOK REQ-WORKFLOW-003 `WorkflowStatusInterface` defines generic workflow status contract
+ * @BABOK REQ-WORKFLOW-004 `StagingStatusInterface` defines staging-specific statuses
+ * @BABOK REQ-WORKFLOW-005 `StateMachineInterface` defines state machine contract
  */
 class WooSyncStateMachine implements StagingStatusInterface, StateMachineInterface
 {
@@ -59,6 +64,10 @@ class WooSyncStateMachine implements StagingStatusInterface, StateMachineInterfa
             self::STATUS_FAILED => [self::STATUS_STAGED, self::STATUS_PENDING],
         ],
     ];
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-WORKFLOW-001 `WooSyncStateMachine` implements module-specific state machine
+     */
 
     public function getValidTransitions(string $currentStatus, ?string $entityType = null): array
     {
@@ -68,21 +77,37 @@ class WooSyncStateMachine implements StagingStatusInterface, StateMachineInterfa
         
         return $this->validTransitions[$entityType][$currentStatus] ?? [];
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-WORKFLOW-001 `WooSyncStateMachine` implements module-specific state machine
+     */
 
     public function getValidTransitionsForEntity(string $entityType, string $currentStatus): array
     {
         return $this->getValidTransitions($currentStatus, $entityType);
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-WORKFLOW-001 `WooSyncStateMachine` implements module-specific state machine
+     */
 
     public function getFinalStatus(): string
     {
         return self::STATUS_IMPORTED;
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-WORKFLOW-001 `WooSyncStateMachine` implements module-specific state machine
+     */
 
     public function requiresCustomerMatch(string $entityType): bool
     {
         return $entityType === self::ENTITY_ORDER;
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-WORKFLOW-001 `WooSyncStateMachine` implements module-specific state machine
+     */
 
     public function getRequiredFieldsForStatus(string $toStatus): array
     {
@@ -99,6 +124,10 @@ class WooSyncStateMachine implements StagingStatusInterface, StateMachineInterfa
                 return [];
         }
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-WORKFLOW-001 `WooSyncStateMachine` implements module-specific state machine
+     */
 
     public function validateEntityForStatus(string $toStatus, array $entity): array
     {
@@ -113,6 +142,10 @@ class WooSyncStateMachine implements StagingStatusInterface, StateMachineInterfa
 
         return $errors;
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-WORKFLOW-001 `WooSyncStateMachine` implements module-specific state machine
+     */
 
     public function getEntityTypes(): array
     {
@@ -121,12 +154,20 @@ class WooSyncStateMachine implements StagingStatusInterface, StateMachineInterfa
             self::ENTITY_ORDER,
         ];
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-WORKFLOW-001 `WooSyncStateMachine` implements module-specific state machine
+     */
 
     public function canTransition(string $fromStatus, string $toStatus, ?string $entityType = null): bool
     {
         $validTransitions = $this->getValidTransitions($fromStatus, $entityType);
         return in_array($toStatus, $validTransitions, true);
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-WORKFLOW-001 `WooSyncStateMachine` implements module-specific state machine
+     */
 
     public function transition(string $fromStatus, string $toStatus, array $context = [], ?string $entityType = null): bool
     {

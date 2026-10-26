@@ -16,6 +16,7 @@ namespace ksfraser\FrontAccounting\Woocommerce\Workflow\Status;
  *   pending_review → error
  * 
  * @since 1.0.0
+ * @BABOK REQ-WORKFLOW-004 StagingStatusInterface defines staging-specific statuses
  */
 interface StagingStatusInterface extends WorkflowStatusInterface
 {

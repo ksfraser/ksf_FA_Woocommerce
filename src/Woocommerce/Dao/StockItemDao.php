@@ -13,6 +13,7 @@ use ksfraser\FrontAccounting\Woocommerce\DatabaseInterface;
  * re-fetch path is testable in isolation and reusable across sync services.
  *
  * @since 1.0.0
+ * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
  */
 class StockItemDao
 {
@@ -23,10 +24,14 @@ class StockItemDao
     private $prefix;
 
     /**
-     * @param DatabaseInterface $db Database adapter
-     *
      * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
+     * @param DatabaseInterface $db Database adapter
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
      */
+
     public function __construct(DatabaseInterface $db)
     {
         $this->db = $db;
@@ -36,11 +41,15 @@ class StockItemDao
     /**
      * Get the stock_master row for an item, ready for WooCommerce export.
      *
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
      * @param string $stockId FA stock_id
      * @return array|null The stock_master row or null when not found
-     *
+     */    /**
      * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
      */
+
     public function getItemForSync(string $stockId): ?array
     {
         $result = $this->db->query(sprintf(

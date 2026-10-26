@@ -17,6 +17,7 @@ use ksfraser\FrontAccounting\Woocommerce\LoggerInterface;
  *
  * @package Ksfraser\FrontAccounting\Woocommerce\Staging
  * @since 1.0.0
+ * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
  */
 class CustomerStaging
 {
@@ -33,6 +34,10 @@ class CustomerStaging
     private const SCORE_PHONE = 25.0;
     private const SCORE_NAME_COMPANY = 20.0;
     private const SCORE_ADDRESS = 15.0;
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
+     */
 
     public function __construct(
         DatabaseInterface $db,
@@ -49,7 +54,11 @@ class CustomerStaging
      *
      * @param array $wooData WooCommerce customer/order data with billing key
      * @return int ISU staging ID
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
      */
+
     public function stageCustomer(array $wooData): int
     {
         $billing = $wooData['billing'] ?? $wooData;
@@ -88,7 +97,11 @@ class CustomerStaging
      *
      * @param int $stagingId ISU staging ID
      * @return array Matching candidates sorted by score descending
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
      */
+
     public function findMatches(int $stagingId): array
     {
         $staged = $this->gateway->getCustomerById($stagingId);
@@ -148,7 +161,11 @@ class CustomerStaging
      * @param int|null $selectedDebtorNo Existing debtor to link to
      * @param string|null $selectedBranch Existing branch to link to
      * @return array ['debtor_no' => int, 'branch_ref' => string] or ['error' => string]
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
      */
+
     public function importCustomer(int $stagingId, ?int $selectedDebtorNo = null, ?string $selectedBranch = null): array
     {
         $staged = $this->gateway->getCustomerById($stagingId);
@@ -187,7 +204,11 @@ class CustomerStaging
      * Get all staged customers from ISU.
      *
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
      */
+
     public function getStagedCustomers(): array
     {
         return $this->gateway->getStagedCustomers();
@@ -198,7 +219,11 @@ class CustomerStaging
      *
      * @param array $isuRecord ISU staging customer record
      * @return array Legacy field format
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
      */
+
     private function mapIsuToLegacyFields(array $isuRecord): array
     {
         $rawJson = json_decode($isuRecord['raw_json'] ?? '{}', true);
@@ -213,6 +238,10 @@ class CustomerStaging
             'address1' => $isuRecord['address_line1'] ?? $billing['address_1'] ?? '',
         ];
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
+     */
 
     private function calculateMatchScore(array $staged, array $candidate): float
     {
@@ -260,6 +289,10 @@ class CustomerStaging
 
         return min(100.0, $score);
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
+     */
 
     private function fuzzyMatch(string $a, string $b): bool
     {
@@ -273,11 +306,19 @@ class CustomerStaging
         $len = max(strlen($a), strlen($b));
         return $len > 0 && ($dist / $len) < 0.2;
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
+     */
 
     private function normalizeAddress(string $addr): string
     {
         return strtolower(trim(preg_replace('/\s+/', ' ', $addr)));
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
+     */
 
     private function createCustomer(array $billing): int
     {
@@ -302,6 +343,10 @@ class CustomerStaging
         $result = $this->db->query("SELECT LAST_INSERT_ID() as id");
         return (int)($result[0]['id'] ?? 0);
     }
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
+     */
 
     private function createBranch(int $debtorNo, array $billing): string
     {
@@ -336,7 +381,11 @@ class CustomerStaging
 
     /**
      * @deprecated 1.2.0 Use IsuStagingGateway::stageCustomer() instead.
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
      */
+
     public function ensureStagingTable(): void
     {
     }

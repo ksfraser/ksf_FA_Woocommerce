@@ -8,6 +8,7 @@ namespace ksfraser\FrontAccounting\Woocommerce;
  * Migrates from legacy class.woo_category.php
  * 
  * @since 1.0.0
+ * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
  */
 class CategoryExporter
 {
@@ -15,6 +16,7 @@ class CategoryExporter
      * WooCommerce REST Client
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @var WooRestClientInterface
      */
     private $restClient;
@@ -23,6 +25,7 @@ class CategoryExporter
      * Logger instance
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @var LoggerInterface
      */
     private $logger;
@@ -31,6 +34,7 @@ class CategoryExporter
      * Database instance
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @var DatabaseInterface
      */
     private $db;
@@ -39,10 +43,16 @@ class CategoryExporter
      * Constructor
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-003 Module uses Dependency Injection for service dependencies
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @param WooRestClientInterface $restClient
      * @param LoggerInterface $logger
      * @param DatabaseInterface $db
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     public function __construct(
         WooRestClientInterface $restClient,
         LoggerInterface $logger,
@@ -57,8 +67,13 @@ class CategoryExporter
      * Export all categories to WooCommerce
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @return array Export statistics
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     public function exportAllCategories(): array
     {
         $this->logger->info('Starting category export');
@@ -86,9 +101,14 @@ class CategoryExporter
      * Migrates from legacy woo_category::send_categories_to_woo()
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @param bool $debugMode Limit to 1 item for debugging
      * @return array Result with sent count
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     public function sendNewCategoriesToWoo(bool $debugMode = false): array
     {
         $this->logger->info('Sending new categories to WooCommerce');
@@ -147,9 +167,14 @@ class CategoryExporter
      * Export a single category
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @param array $categoryData
      * @return bool Success
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     public function exportCategory(array $categoryData): bool
     {
         $wooData = $this->buildCategoryData($categoryData);
@@ -179,10 +204,15 @@ class CategoryExporter
      * Migrates from legacy woo_category::create_category()
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @param array $categoryData
      * @param int $faCategoryId
      * @return bool|int WooCommerce category ID on success, false on failure
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     public function createCategory(array $categoryData, int $faCategoryId)
     {
         $this->logger->info(sprintf('Creating category: %s', $categoryData['name']));
@@ -228,9 +258,14 @@ class CategoryExporter
      * Migrates from legacy woo_category::match_category_name()
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @param string $name
      * @return array|null Matched category data or null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     public function matchCategoryByName(string $name): ?array
     {
         $this->logger->info(sprintf('Matching category by name: %s', $name));
@@ -254,9 +289,14 @@ class CategoryExporter
      * Migrates from legacy woo_category::match_category_slug()
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @param string $slug
      * @return array|null Matched category data or null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     public function matchCategoryBySlug(string $slug): ?array
     {
         $this->logger->info(sprintf('Matching category by slug: %s', $slug));
@@ -280,9 +320,14 @@ class CategoryExporter
      * Migrates from legacy woo_category::get_categories()
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @param int $perPage
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     public function getCategories(int $perPage = 100): array
     {
         $this->logger->info('Fetching categories from WooCommerce');
@@ -304,9 +349,14 @@ class CategoryExporter
      * Get a single category by ID from WooCommerce
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @param int $categoryId
      * @return array|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     public function getCategory(int $categoryId): ?array
     {
         try {
@@ -323,9 +373,14 @@ class CategoryExporter
      * Migrates from legacy woo_category::get_fa_id_by_category_name()
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @param string $name
      * @return int|null FA category ID or null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     public function getFaIdByCategoryName(string $name): ?int
     {
         $result = $this->db->query(sprintf(
@@ -347,11 +402,16 @@ class CategoryExporter
      * Migrates from legacy woo_category::update_woo_categories_xref()
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @param int $faCatId
      * @param int $wooCatId
      * @param string $description
      * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     public function updateCategoryXref(int $faCatId, int $wooCatId, string $description): bool
     {
         try {
@@ -393,8 +453,13 @@ class CategoryExporter
      * Migrates from legacy woo_category::load_categories()
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @return int Count of categories loaded
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     public function loadCategoriesFromWoo(): int
     {
         $this->logger->info('Loading categories from WooCommerce');
@@ -423,8 +488,13 @@ class CategoryExporter
      * Refresh categories from WooCommerce (sync local cache)
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @return int
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     public function refreshCategoriesFromWoo(): int
     {
         return $this->loadCategoriesFromWoo();
@@ -434,9 +504,14 @@ class CategoryExporter
      * Build category data for WooCommerce
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @param array $faData
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     public function buildCategoryData(array $faData): array
     {
         return [
@@ -450,9 +525,14 @@ class CategoryExporter
      * Find category by name
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @param string $name
      * @return array|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     public function findCategoryByName(string $name): ?array
     {
         $results = $this->restClient->get('products/categories', [
@@ -466,10 +546,15 @@ class CategoryExporter
      * Update an existing category in WooCommerce
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @param int $categoryId
      * @param array $data
      * @return array|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     public function updateCategory(int $categoryId, array $data): ?array
     {
         try {
@@ -484,9 +569,14 @@ class CategoryExporter
      * Delete a category from WooCommerce
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @param int $categoryId
      * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     public function deleteCategory(int $categoryId): bool
     {
         try {
@@ -502,9 +592,14 @@ class CategoryExporter
      * Sanitize a string for use as a slug
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @param string $name
      * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     private function sanitizeSlug(string $name): string
     {
         $slug = strtolower(trim($name));
@@ -517,10 +612,15 @@ class CategoryExporter
      * Insert category data into local woo_category table
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      * @param array $catData
      * @param int|null $faId
      * @return void
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     private function insertCategoryToLocalTable(array $catData, ?int $faId): void
     {
         try {
@@ -547,9 +647,14 @@ class CategoryExporter
      * Get table name with prefix
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-004 Module avoids code duplication (DRY principle)
      * @param string $table
      * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-011 CategoryExporter exports categories to WooCommerce
      */
+
     private function getTableName(string $table): string
     {
         $prefix = $this->db->getPrefix();

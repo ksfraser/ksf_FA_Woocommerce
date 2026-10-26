@@ -44,7 +44,11 @@ class OrderExporter
      * @param WooRestClientInterface $restClient
      * @param LoggerInterface $logger
      * @param DatabaseInterface $db
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function __construct(
         WooRestClientInterface $restClient,
         LoggerInterface $logger,
@@ -62,7 +66,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $filters
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function getOrders(array $filters = []): array
     {
         $this->logger->info('Fetching orders from WooCommerce');
@@ -86,7 +94,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param int $orderId
      * @return array|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function getOrder(int $orderId): ?array
     {
         $this->logger->info(sprintf('Fetching order ID: %d', $orderId));
@@ -108,7 +120,11 @@ class OrderExporter
      * @param int $orderId
      * @param string $status
      * @return array|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function updateOrderStatus(int $orderId, string $status): ?array
     {
         $this->logger->info(sprintf('Updating order %d status to %s', $orderId, $status));
@@ -131,7 +147,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $filters
      * @return array Statistics
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function importOrdersToFA(array $filters = []): array
     {
         $this->logger->info('Starting order import to FA');
@@ -162,7 +182,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $filters
      * @return array All orders across pages
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     private function fetchAllOrders(array $filters): array
     {
         $perPage = 100;
@@ -196,7 +220,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $order
      * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     private function importOrderToFA(array $order): bool
     {
         $this->logger->info(sprintf('Importing order %s to FA', $order['number'] ?? 'unknown'));
@@ -250,7 +278,11 @@ class OrderExporter
      * @param array $payload Event payload
      * @return void
      * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     private function broadcastOrderImported(array $payload): void
     {
         if (!function_exists('hook_invoke_all')) {
@@ -277,7 +309,11 @@ class OrderExporter
      * @param array $order WooCommerce order
      * @return string Date in Y-m-d format
      * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     private function extractOrderDate(array $order): string
     {
         $created = (string)($order['date_created'] ?? '');
@@ -294,7 +330,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @param array $order
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function extractCustomerData(array $order): array
     {
         $billing = $order['billing'] ?? [];
@@ -326,7 +366,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @param array $order
      * @return array Import result
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function importCustomerFromOrder(array $order): array
     {
         $customerData = $this->extractCustomerData($order);
@@ -374,7 +418,11 @@ class OrderExporter
      * @param array $wooOrder
      * @param int|null $faCustomerId
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function createFAOrderFromWooOrder(array $wooOrder, ?int $faCustomerId = null): array
     {
         $this->logger->info(sprintf('Creating FA order from WooCommerce order %s', $wooOrder['number'] ?? 'unknown'));
@@ -403,7 +451,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @param array $customerData
      * @return int FA customer ID
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     private function findOrCreateFACustomer(array $customerData): int
     {
         if (empty($customerData['email'])) {
@@ -432,7 +484,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @param array $customerData
      * @return int New customer ID
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     private function createFACustomer(array $customerData): int
     {
         $this->logger->info(sprintf('Creating FA customer: %s', $customerData['email']));
@@ -474,7 +530,11 @@ class OrderExporter
      * @param int $customerId
      * @param array $customerData
      * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     private function updateFACustomer(int $customerId, array $customerData): bool
     {
         $this->logger->info(sprintf('Updating FA customer ID: %d', $customerId));
@@ -525,7 +585,11 @@ class OrderExporter
      * @param array $wooOrder WooCommerce order data
      * @param int|null $faCustomerId FA customer ID
      * @return array Result with success flag and FA order number
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     private function createFASalesOrder(array $wooOrder, ?int $faCustomerId): array
     {
         $this->logger->info(sprintf('Creating FA sales order for WooCommerce order %d', $wooOrder['id']));
@@ -618,7 +682,11 @@ class OrderExporter
      * @param array $wooOrder WooCommerce order data
      * @param int|null $faCustomerId FA customer ID
      * @return array Result with success flag and FA order number
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     private function createFAInvoice(array $wooOrder, ?int $faCustomerId): array
     {
         $this->logger->info(sprintf('Creating FA invoice for WooCommerce order %d', $wooOrder['id']));
@@ -716,7 +784,11 @@ class OrderExporter
      * @param int $wooOrderId
      * @param int $faOrderNo
      * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     private function mapWooOrderToFA(int $wooOrderId, int $faOrderNo): bool
     {
         $sql = sprintf(
@@ -738,7 +810,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $orderData
      * @return array|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function createOrder(array $orderData): ?array
     {
         $this->logger->info(sprintf('Creating WooCommerce order from FA data'));
@@ -764,7 +840,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param bool $onlyNewOnly export orders without woo_id
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function createOrders(bool $onlyNewOnly = true): array
     {
         $this->logger->info('Starting batch order export to WooCommerce');
@@ -803,7 +883,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $faData
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function buildWooOrderData(array $faData): array
     {
         $orderData = [
@@ -855,7 +939,11 @@ class OrderExporter
      * @param string $status
      * @param int $perPage
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function getOrdersByStatus(string $status, int $perPage = 100): array
     {
         return $this->getOrders(['status' => $status, 'per_page' => $perPage]);
@@ -870,7 +958,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $order
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function extractPaymentDetails(array $order): array
     {
         return [
@@ -891,7 +983,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $order
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function extractLineItems(array $order): array
     {
         $items = $order['line_items'] ?? [];
@@ -926,7 +1022,11 @@ class OrderExporter
      * @BABOK REQ-FA-010 Shipping lines inserted as FA line items on invoices
      * @param array $order
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function extractShippingLines(array $order): array
     {
         $lines = $order['shipping_lines'] ?? [];
@@ -953,7 +1053,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $order
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function extractTaxLines(array $order): array
     {
         $lines = $order['tax_lines'] ?? [];
@@ -980,7 +1084,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $order
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function extractFeeLines(array $order): array
     {
         $lines = $order['fee_lines'] ?? [];
@@ -1007,7 +1115,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $order
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function extractCouponLines(array $order): array
     {
         $lines = $order['coupon_lines'] ?? [];
@@ -1032,7 +1144,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $order
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function extractRefunds(array $order): array
     {
         $refunds = $order['refunds'] ?? [];
@@ -1058,7 +1174,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param array $order
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function getOrderTotals(array $order): array
     {
         return [
@@ -1083,7 +1203,11 @@ class OrderExporter
      * @param int $faOrderId
      * @param int $wooOrderId
      * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function updateOrderWooId(int $faOrderId, int $wooOrderId): bool
     {
         try {
@@ -1107,7 +1231,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
      * @param string $wooStatus
      * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     public function mapOrderStatus(string $wooStatus): string
     {
         $statusMap = [
@@ -1130,7 +1258,11 @@ class OrderExporter
      * @BABOK REQ-ARCH-004 Module avoids code duplication (DRY principle)
      * @param string $table
      * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-FA-009 Shipping lines inserted as FA line items on sales orders
      */
+
     private function getTableName(string $table): string
     {
         $prefix = $this->db->getPrefix();

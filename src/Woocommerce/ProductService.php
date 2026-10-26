@@ -7,6 +7,8 @@ namespace ksfraser\FrontAccounting\Woocommerce;
  * Handles product retrieval operations from WooCommerce.
  * 
  * @since 1.0.0
+ * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
+ * @BABOK REQ-ARCH-009 OrderExporter exports orders to WooCommerce
  */
 class ProductService
 {
@@ -14,6 +16,7 @@ class ProductService
      * WooCommerce REST Client
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      * @var WooRestClientInterface
      */
     private $restClient;
@@ -22,6 +25,7 @@ class ProductService
      * Logger instance
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      * @var LoggerInterface
      */
     private $logger;
@@ -30,6 +34,7 @@ class ProductService
      * Database instance
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      * @var DatabaseInterface
      */
     private $db;
@@ -38,10 +43,16 @@ class ProductService
      * Constructor
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-003 Module uses Dependency Injection for service dependencies
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      * @param WooRestClientInterface $restClient
      * @param LoggerInterface $logger
      * @param DatabaseInterface $db
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     public function __construct(
         WooRestClientInterface $restClient,
         LoggerInterface $logger,
@@ -56,9 +67,14 @@ class ProductService
      * Get all products from WooCommerce
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      * @param int $perPage Items per page
      * @return array Array of products
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     public function getProducts(int $perPage = 100): array
     {
         $this->logger->info("Fetching all products from WooCommerce");
@@ -81,9 +97,14 @@ class ProductService
      * Get a single product by ID
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      * @param int $productId WooCommerce product ID
      * @return array|null Product data or null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     public function getProduct(int $productId): ?array
     {
         $this->logger->info("Fetching product ID: {$productId}");
@@ -101,9 +122,14 @@ class ProductService
      * Find product by SKU
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      * @param string $sku SKU to search
      * @return array|null Product data or null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     public function findProductBySku(string $sku): ?array
     {
         $this->logger->info("Searching for product with SKU: {$sku}");
@@ -129,9 +155,14 @@ class ProductService
      * List products with pagination handling
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      * @param int $perPage Items per page
      * @return array All products across pages
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     public function listProducts(int $perPage = 100): array
     {
         $allProducts = [];

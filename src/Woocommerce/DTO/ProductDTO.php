@@ -9,6 +9,8 @@ namespace ksfraser\FrontAccounting\Woocommerce\DTO;
  * Immutable data container for product export data.
  * 
  * @since 1.0.0
+ * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+ * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
  */
 class ProductDTO
 {
@@ -168,6 +170,15 @@ class ProductDTO
     /** @var array */
     private $rawData;
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @param array $data
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function __construct(array $data)
     {
         // Basic identification
@@ -263,120 +274,336 @@ class ProductDTO
         $this->rawData = $data;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getStockId(): string
     {
         return $this->stockId;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getName(): string
     {
         return $this->name;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getSlug(): string
     {
         return $this->slug;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getPermalink(): string
     {
         return $this->permalink;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getDateCreated(): ?string
     {
         return $this->dateCreated;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getDateModified(): ?string
     {
         return $this->dateModified;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getType(): string
     {
         return $this->type;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getStatus(): string
     {
         return $this->status;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getFeatured(): bool
     {
         return $this->featured;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getCatalogVisibility(): string
     {
         return $this->catalogVisibility;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getDescription(): ?string
     {
         return $this->description;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getShortDescription(): ?string
     {
         return $this->shortDescription;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getSku(): string
     {
         return $this->sku;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return float
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getPrice(): float
     {
         return $this->price;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getRegularPrice(): string
     {
         return $this->regularPrice;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getSalePrice(): string
     {
         return $this->salePrice;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getDateOnSaleFrom(): string
     {
         return $this->dateOnSaleFrom;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getDateOnSaleTo(): string
     {
         return $this->dateOnSaleTo;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return int
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getTotalSales(): int
     {
         return $this->totalSales;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getTaxStatus(): string
     {
         return $this->taxStatus;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getTaxClass(): string
     {
         return $this->taxClass;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getManageStock(): bool
     {
         return $this->manageStock;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return int|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getStockQty(): ?int
     {
         return $this->stockQty;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return int|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getStockQuantity(): ?int
     {
@@ -386,8 +613,14 @@ class ProductDTO
     /**
      * Get WC v3 stock status string.
      *
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
      * @return string 'instock', 'outofstock', or 'onbackorder'
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
      */
+
     public function getStockStatus(): string
     {
         return $this->stockStatus;
@@ -395,151 +628,419 @@ class ProductDTO
 
     /**
      * @deprecated Use getStockStatus() instead
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
      */
+
     public function getInStock(): bool
     {
         return $this->stockStatus === 'instock';
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getBackorders(): string
     {
         return $this->backorders;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getBackordersAllowed(): bool
     {
         return $this->backordersAllowed;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getBackordered(): bool
     {
         return $this->backordered;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getSoldIndividually(): bool
     {
         return $this->soldIndividually;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return float|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getWeight(): ?float
     {
         return $this->weight;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return array|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getDimensions(): ?array
     {
         return $this->dimensions;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getShippingRequired(): bool
     {
         return $this->shippingRequired;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getShippingTaxable(): bool
     {
         return $this->shippingTaxable;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getShippingClass(): string
     {
         return $this->shippingClass;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return int
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getShippingClassId(): int
     {
         return $this->shippingClassId;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getReviewsAllowed(): bool
     {
         return $this->reviewsAllowed;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getAverageRating(): string
     {
         return $this->averageRating;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return int
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getRatingCount(): int
     {
         return $this->ratingCount;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getRelatedIds(): array
     {
         return $this->relatedIds;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getUpsellIds(): array
     {
         return $this->upsellIds;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getCrossSellIds(): array
     {
         return $this->crossSellIds;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return int
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getParentId(): int
     {
         return $this->parentId;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getPurchaseNote(): string
     {
         return $this->purchaseNote;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getAttributes(): array
     {
         return $this->attributes;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getDefaultAttributes(): array
     {
         return $this->defaultAttributes;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getVariations(): array
     {
         return $this->variations;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getGroupedProducts(): array
     {
         return $this->groupedProducts;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return int
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getMenuOrder(): int
     {
         return $this->menuOrder;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getMetaData(): array
     {
         return $this->metaData;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return int|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function getWooId(): ?int
     {
         return $this->wooId;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return int|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function getId(): ?int
     {
         return $this->wooId;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function isVariable(): bool
     {
         return $this->type === self::TYPE_VARIABLE;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
+
     public function isVariation(): bool
     {
         return $this->type === self::TYPE_VARIATION;
     }
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     */
 
     public function toArray(): array
     {
@@ -587,6 +1088,12 @@ class ProductDTO
         return $data;
     }
 
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DTO-003 ProductDTO provides immutable product data container
+     * @param array $wooProduct
+     * @return self
+     */
     public static function fromWooCommerce(array $wooProduct): self
     {
         $data = $wooProduct;

@@ -17,6 +17,7 @@ use ksfraser\FrontAccounting\Woocommerce\LoggerInterface;
  *
  * @package Ksfraser\FrontAccounting\Woocommerce\Staging
  * @since 1.0.0
+ * @BABOK REQ-ARCH-013 OrderStaging stages WooCommerce orders with payment extraction
  */
 class OrderStaging
 {
@@ -34,6 +35,10 @@ class OrderStaging
     public const STATUS_CUSTOMER_MATCHED = 'customer_matched';
     public const STATUS_IMPORTED = 'imported';
     public const STATUS_ERROR = 'error';
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-013 OrderStaging stages WooCommerce orders with payment extraction
+     */
 
     public function __construct(
         DatabaseInterface $db,
@@ -51,7 +56,11 @@ class OrderStaging
      * @param array $wooOrder WooCommerce order data
      * @param int|null $stagedCustomerId Not used (kept for backward compat)
      * @return int ISU staging ID
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-013 OrderStaging stages WooCommerce orders with payment extraction
      */
+
     public function stageOrder(array $wooOrder, ?int $stagedCustomerId = null): int
     {
         $billing = $wooOrder['billing'] ?? [];
@@ -96,7 +105,11 @@ class OrderStaging
      * @param int $faDebtorNo FA debtor number
      * @param string $faBranchRef FA branch reference
      * @return void
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-013 OrderStaging stages WooCommerce orders with payment extraction
      */
+
     public function linkCustomer(int $stagingId, int $faDebtorNo, string $faBranchRef): void
     {
         $this->gateway->updateStatus($stagingId, self::STATUS_CUSTOMER_MATCHED, [
@@ -109,7 +122,11 @@ class OrderStaging
      * Get all staged orders from ISU (not yet imported).
      *
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-013 OrderStaging stages WooCommerce orders with payment extraction
      */
+
     public function getStagedOrders(): array
     {
         return $this->gateway->getStagedOrders();
@@ -119,7 +136,11 @@ class OrderStaging
      * Get orders pending customer matching.
      *
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-013 OrderStaging stages WooCommerce orders with payment extraction
      */
+
     public function getOrdersPendingCustomer(): array
     {
         $staged = $this->gateway->getByStatus(self::STATUS_STAGED);
@@ -131,7 +152,11 @@ class OrderStaging
      * Get orders ready for import (customer matched, not yet imported).
      *
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-013 OrderStaging stages WooCommerce orders with payment extraction
      */
+
     public function getOrdersReadyForImport(): array
     {
         return $this->gateway->getByStatus(self::STATUS_CUSTOMER_MATCHED);
@@ -143,7 +168,11 @@ class OrderStaging
      * @param int $stagingId ISU staging ID
      * @param int $faOrderNo FA order/invoice number
      * @return void
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-013 OrderStaging stages WooCommerce orders with payment extraction
      */
+
     public function markImported(int $stagingId, int $faOrderNo): void
     {
         $this->gateway->updateStatus($stagingId, self::STATUS_IMPORTED, [
@@ -157,7 +186,11 @@ class OrderStaging
      * @param int $stagingId ISU staging ID
      * @param string $error Error message
      * @return void
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-013 OrderStaging stages WooCommerce orders with payment extraction
      */
+
     public function markError(int $stagingId, string $error): void
     {
         $this->gateway->updateStatus($stagingId, self::STATUS_ERROR, [
@@ -171,7 +204,11 @@ class OrderStaging
      *
      * @param array $wooOrder WooCommerce order data
      * @return array Payment details
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-013 OrderStaging stages WooCommerce orders with payment extraction
      */
+
     public function extractPaymentDetails(array $wooOrder): array
     {
         return [
@@ -190,7 +227,11 @@ class OrderStaging
      * @param array $wooOrders Array of WooCommerce order data
      * @param array $customerStagingIds Map of email => staging ID
      * @return array Array of ISU staging IDs
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-013 OrderStaging stages WooCommerce orders with payment extraction
      */
+
     public function stageOrders(array $wooOrders, array $customerStagingIds = []): array
     {
         $stagedIds = [];
@@ -217,7 +258,11 @@ class OrderStaging
      *
      * @param callable $processCallback function(wooOrder, debtorNo, branchRef): int
      * @return array ['processed' => int, 'errors' => array]
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-013 OrderStaging stages WooCommerce orders with payment extraction
      */
+
     public function processPendingOrders(callable $processCallback): array
     {
         $orders = $this->getOrdersReadyForImport();
@@ -246,7 +291,11 @@ class OrderStaging
 
     /**
      * @deprecated 1.2.0 Use IsuStagingGateway instead.
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-013 OrderStaging stages WooCommerce orders with payment extraction
      */
+
     public function ensureStagingTable(): void
     {
     }

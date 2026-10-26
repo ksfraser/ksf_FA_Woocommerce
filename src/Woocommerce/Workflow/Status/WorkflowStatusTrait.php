@@ -11,6 +11,7 @@ namespace ksfraser\FrontAccounting\Woocommerce\Workflow\Status;
  * Use in classes that implement WorkflowStatusInterface.
  * 
  * @since 1.0.0
+ * @BABOK REQ-WORKFLOW-006 Generic workflow statuses: pending, in_progress, completed, error, failed, cancelled
  */
 trait WorkflowStatusTrait
 {

@@ -13,6 +13,8 @@ namespace ksfraser\FrontAccounting\Woocommerce\Staging;
  *
  * @package Ksfraser\FrontAccounting\Woocommerce\Staging
  * @since 1.2.0
+ * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
+ * @BABOK REQ-ARCH-013 OrderStaging stages WooCommerce orders with payment extraction
  */
 class IsuStagingGateway
 {
@@ -39,7 +41,11 @@ class IsuStagingGateway
      * @param mixed       $data Payload by reference; a responder may replace it
      * @param array|null  $opts
      * @return array|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
      */
+
     private function invokeCapability(string $capability, &$data, $opts = null)
     {
         // No hook_invoke_all fallback. A broadcast cannot stand in for a
@@ -64,7 +70,11 @@ class IsuStagingGateway
      *
      * @param array $customerData Customer data (source_customer_id, name, email, phone, address, etc.)
      * @return int ISU staging ID, or 0 on failure
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
      */
+
     public function stageCustomer(array $customerData): int
     {
         if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
@@ -88,7 +98,11 @@ class IsuStagingGateway
      *
      * @param array $filters Optional filters (status, source, etc.)
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
      */
+
     public function getStagedCustomers(array $filters = []): array
     {
         if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
@@ -108,7 +122,11 @@ class IsuStagingGateway
      *
      * @param int $id ISU staging ID
      * @return array|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
      */
+
     public function getCustomerById(int $id): ?array
     {
         if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
@@ -129,7 +147,11 @@ class IsuStagingGateway
      * @param array $orderData WooCommerce order data
      * @param array $lineItems Formatted line items for DTO
      * @return int ISU staging ID, or 0 on failure
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
      */
+
     public function stageOrder(array $orderData, array $lineItems = []): int
     {
         if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
@@ -190,7 +212,11 @@ class IsuStagingGateway
      *
      * @param int $id ISU staging ID
      * @return array|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
      */
+
     public function getById(int $id): ?array
     {
         if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
@@ -212,7 +238,11 @@ class IsuStagingGateway
      * @param string|null $fromDate From date (Y-m-d)
      * @param string|null $toDate To date (Y-m-d)
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
      */
+
     public function getByStatus(
         string $status,
         ?string $fromDate = null,
@@ -240,7 +270,11 @@ class IsuStagingGateway
      * Get staged transactions (all statuses, no filter).
      *
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
      */
+
     public function getStagedOrders(): array
     {
         if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
@@ -261,7 +295,11 @@ class IsuStagingGateway
      * @param string $status New status
      * @param array $extraFields Additional fields to update
      * @return void
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
      */
+
     public function updateStatus(int $id, string $status, array $extraFields = []): void
     {
         if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
@@ -284,7 +322,11 @@ class IsuStagingGateway
      * @param int $id ISU staging ID
      * @param array $fields Fields to update
      * @return void
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
      */
+
     public function updateFields(int $id, array $fields): void
     {
         if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
@@ -304,7 +346,11 @@ class IsuStagingGateway
      *
      * @param int $stagingId ISU staging transaction ID
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
      */
+
     public function getLineItems(int $stagingId): array
     {
         if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {
@@ -323,7 +369,11 @@ class IsuStagingGateway
      *
      * @param string|null $source Source filter (e.g., 'woocommerce')
      * @return array [status => count]
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-012 CustomerStaging stages WooCommerce customers for review before import
      */
+
     public function getStatusCounts(?string $source = null): array
     {
         if (!function_exists('hook_invoke_first') && !function_exists('hook_invoke_all')) {

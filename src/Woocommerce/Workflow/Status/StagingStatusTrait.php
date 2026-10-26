@@ -11,6 +11,7 @@ namespace ksfraser\FrontAccounting\Woocommerce\Workflow\Status;
  * Use in classes that implement StagingStatusInterface.
  * 
  * @since 1.0.0
+ * @BABOK REQ-WORKFLOW-004 StagingStatusInterface defines staging-specific statuses
  */
 trait StagingStatusTrait
 {

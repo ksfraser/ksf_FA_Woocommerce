@@ -7,6 +7,7 @@ namespace ksfraser\FrontAccounting\Woocommerce;
  * Handles exporting customers from FrontAccounting to WooCommerce.
  * 
  * @since 1.0.0
+ * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
  */
 class CustomerExporter
 {
@@ -14,6 +15,7 @@ class CustomerExporter
      * WooCommerce REST Client
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @var WooRestClientInterface
      */
     private $restClient;
@@ -22,6 +24,7 @@ class CustomerExporter
      * Logger instance
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @var LoggerInterface
      */
     private $logger;
@@ -30,6 +33,7 @@ class CustomerExporter
      * Database instance
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @var DatabaseInterface
      */
     private $db;
@@ -38,10 +42,16 @@ class CustomerExporter
      * Constructor
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-003 Module uses Dependency Injection for service dependencies
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @param WooRestClientInterface $restClient
      * @param LoggerInterface $logger
      * @param DatabaseInterface $db
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      */
+
     public function __construct(
         WooRestClientInterface $restClient,
         LoggerInterface $logger,
@@ -56,9 +66,14 @@ class CustomerExporter
      * Export a single customer to WooCommerce
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @param array $customerData
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      */
+
     public function exportCustomer(array $customerData): array
     {
         $this->logger->info(sprintf('Exporting customer: %s', $customerData['email'] ?? 'unknown'));
@@ -76,9 +91,14 @@ class CustomerExporter
      * Get a single customer by ID
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @param int $customerId
      * @return array|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      */
+
     public function getCustomer(int $customerId): ?array
     {
         $this->logger->info(sprintf('Fetching customer ID: %d', $customerId));
@@ -96,9 +116,14 @@ class CustomerExporter
      * Find customer by email
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @param string $email
      * @return array|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      */
+
     public function findCustomerByEmail(string $email): ?array
     {
         $this->logger->info(sprintf('Searching for customer with email: %s', $email));
@@ -116,10 +141,15 @@ class CustomerExporter
      * Update a customer
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @param int $customerId
      * @param array $data
      * @return array|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      */
+
     public function updateCustomer(int $customerId, array $data): ?array
     {
         $this->logger->info(sprintf('Updating customer ID: %d', $customerId));
@@ -137,9 +167,14 @@ class CustomerExporter
      * List customers
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @param array $filters
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      */
+
     public function listCustomers(array $filters = []): array
     {
         $this->logger->info('Listing customers from WooCommerce');
@@ -162,9 +197,14 @@ class CustomerExporter
      * and upserts customers in WooCommerce by email or mapping.
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @param int $limit Max customers to export (0 = all)
      * @return array Statistics
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      */
+
     public function exportAllCustomers(int $limit = 0): array
     {
         $this->logger->info('Starting customer export');
@@ -261,9 +301,14 @@ class CustomerExporter
      * Splits name into first/last, maps branch address and phone.
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      * @param array $faData
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      */
+
     public function buildCustomerData(array $faData): array
     {
         $fullName = $faData['name'] ?? '';
@@ -317,9 +362,14 @@ class CustomerExporter
      * Get table name with prefix
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-004 Module avoids code duplication (DRY principle)
      * @param string $table
      * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      */
+
     private function getTableName(string $table): string
     {
         $prefix = $this->db->getPrefix();
@@ -331,7 +381,11 @@ class CustomerExporter
      * 
      * @param int $debtorNo
      * @return int|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      */
+
     private function getMappedWooId(int $debtorNo): ?int
     {
         $rows = $this->db->query(sprintf(
@@ -347,7 +401,11 @@ class CustomerExporter
      * @param int $debtorNo
      * @param int $wooCustomerId
      * @param array $data
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      */
+
     private function saveMapping(int $debtorNo, int $wooCustomerId, array $data): void
     {
         $prefix = $this->db->getPrefix();
@@ -368,7 +426,11 @@ class CustomerExporter
 
     /**
      * Ensure the customer mapping table exists
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-010 CustomerExporter exports customers to WooCommerce
      */
+
     private function ensureMappingTable(): void
     {
         $prefix = $this->db->getPrefix();

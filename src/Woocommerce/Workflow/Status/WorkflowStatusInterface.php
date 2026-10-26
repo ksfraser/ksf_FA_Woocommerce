@@ -21,6 +21,7 @@ namespace ksfraser\FrontAccounting\Woocommerce\Workflow\Status;
  * 4. Define transition rules in a state machine
  * 
  * @since 1.0.0
+ * @BABOK REQ-WORKFLOW-006 Generic workflow statuses: pending, in_progress, completed, error, failed, cancelled
  */
 interface WorkflowStatusInterface
 {

@@ -16,6 +16,8 @@ use ksfraser\FrontAccounting\Woocommerce\Staging\OrderStaging;
  * Can be called from FA UI or via cron.
  * 
  * @since 1.0.0
+ * @BABOK REQ-UI-001 ImportExportDispatcher dispatches import/export actions
+ * @BABOK REQ-UI-002 UI layer coordinates between exporters and staging services
  */
 class ImportExportDispatcher
 {
@@ -34,6 +36,10 @@ class ImportExportDispatcher
     private $customerStaging;
     private $orderStaging;
     private $logger;
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-UI-001 ImportExportDispatcher dispatches import/export actions
+     */
 
     public function __construct(
         ProductExportService $productExporter,
@@ -60,7 +66,11 @@ class ImportExportDispatcher
      * @param string $action
      * @param array $params
      * @return array Result
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-UI-001 ImportExportDispatcher dispatches import/export actions
      */
+
     public function dispatch(string $action, array $params = []): array
     {
         switch ($action) {
@@ -85,7 +95,11 @@ class ImportExportDispatcher
 
     /**
      * Export products to WooCommerce
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-UI-001 ImportExportDispatcher dispatches import/export actions
      */
+
     private function exportProducts(array $params): array
     {
         $limit = (int)($params['limit'] ?? 0);
@@ -101,7 +115,11 @@ class ImportExportDispatcher
 
     /**
      * Export categories to WooCommerce
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-UI-001 ImportExportDispatcher dispatches import/export actions
      */
+
     private function exportCategories(array $params): array
     {
         return $this->categoryExporter->exportAllCategories();
@@ -109,7 +127,11 @@ class ImportExportDispatcher
 
     /**
      * Import orders from WooCommerce
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-UI-001 ImportExportDispatcher dispatches import/export actions
      */
+
     private function importOrders(array $params): array
     {
         $limit = (int)($params['limit'] ?? 10);
@@ -118,7 +140,11 @@ class ImportExportDispatcher
 
     /**
      * Export all FA customers to WooCommerce
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-UI-001 ImportExportDispatcher dispatches import/export actions
      */
+
     private function exportCustomers(array $params): array
     {
         $limit = (int)($params['limit'] ?? 0);
@@ -127,7 +153,11 @@ class ImportExportDispatcher
 
     /**
      * Stage customers from WooCommerce (import direction)
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-UI-001 ImportExportDispatcher dispatches import/export actions
      */
+
     private function stageCustomers(array $params): array
     {
         $limit = (int)($params['limit'] ?? 10);
@@ -148,7 +178,11 @@ class ImportExportDispatcher
 
     /**
      * Stage orders from WooCommerce into staging for review
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-UI-001 ImportExportDispatcher dispatches import/export actions
      */
+
     private function stageOrders(array $params): array
     {
         if ($this->orderStaging === null) {
@@ -169,7 +203,11 @@ class ImportExportDispatcher
 
     /**
      * Sync all: export products/categories/customers, import orders
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-UI-001 ImportExportDispatcher dispatches import/export actions
      */
+
     private function syncAll(array $params): array
     {
         return [
@@ -185,7 +223,11 @@ class ImportExportDispatcher
      * 
      * @since 1.0.0
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-UI-001 ImportExportDispatcher dispatches import/export actions
      */
+
     public function getStagedCustomersForUI(): array
     {
         $staged = $this->customerStaging->getStagedCustomers();
@@ -215,7 +257,11 @@ class ImportExportDispatcher
      * UI: Render staging table with matches
      * 
      * @since 1.0.0
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-UI-001 ImportExportDispatcher dispatches import/export actions
      */
+
     public function renderStagingUI(): void
     {
         $staged = $this->getStagedCustomersForUI();

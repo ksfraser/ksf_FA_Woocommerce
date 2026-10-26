@@ -9,11 +9,22 @@ use ksfraser\FrontAccounting\Woocommerce\DatabaseInterface;
  * Handles database operations for sync mapping and staging.
  * 
  * @since 1.0.0
+ * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
+ * @BABOK REQ-DAO-002 SyncDao provides CRUD operations for audit logs
  */
 class SyncDao
 {
     private $db;
     private $prefix;
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
+     * @param DatabaseInterface $db
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
+     */
 
     public function __construct(DatabaseInterface $db)
     {
@@ -23,7 +34,16 @@ class SyncDao
 
     /**
      * Get WooCommerce product ID for a stock_id
+     *
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
+     * @param string $stockId
+     * @return int|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
      */
+
     public function getWooProductId(string $stockId): ?int
     {
         $result = $this->db->query(sprintf(
@@ -37,7 +57,18 @@ class SyncDao
 
     /**
      * Save product mapping
+     *
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
+     * @param string $stockId
+     * @param int $wooProductId
+     * @param string $wooUrl
+     * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
      */
+
     public function saveProductMapping(string $stockId, int $wooProductId, string $wooUrl = ''): bool
     {
         $sql = sprintf(
@@ -59,7 +90,16 @@ class SyncDao
 
     /**
      * Get category mapping
+     *
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
+     * @param int $faCategoryId
+     * @return int|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
      */
+
     public function getCategoryMapping(int $faCategoryId): ?int
     {
         $result = $this->db->query(sprintf(
@@ -73,7 +113,17 @@ class SyncDao
 
     /**
      * Save category mapping
+     *
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
+     * @param int $faCategoryId
+     * @param int $wooCategoryId
+     * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
      */
+
     public function saveCategoryMapping(int $faCategoryId, int $wooCategoryId): bool
     {
         $sql = sprintf(
@@ -92,7 +142,21 @@ class SyncDao
 
     /**
      * Log sync operation
+     *
+     * @since 1.0.0
+     * @BABOK REQ-DAO-002 SyncDao provides CRUD operations for audit logs
+     * @param string $type
+     * @param string $action
+     * @param string|null $refId
+     * @param bool $success
+     * @param string|null $error
+     * @param string|null $data
+     * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
      */
+
     public function logSync(string $type, string $action, ?string $refId, bool $success, ?string $error = null, ?string $data = null): bool
     {
         $sql = sprintf(
@@ -112,7 +176,16 @@ class SyncDao
 
     /**
      * Get unsynced products (for reconciliation)
+     *
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
+     * @param int $limit
+     * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
      */
+
     public function getUnsyncedProducts(int $limit = 100): array
     {
         return $this->db->query(sprintf(
@@ -124,7 +197,17 @@ class SyncDao
 
     /**
      * Mark sync error
+     *
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
+     * @param string $stockId
+     * @param string $error
+     * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
      */
+
     public function markSyncError(string $stockId, string $error): bool
     {
         $sql = sprintf(
@@ -138,7 +221,16 @@ class SyncDao
 
     /**
      * Delete product mapping
+     *
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
+     * @param string $stockId
+     * @return bool
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
      */
+
     public function deleteProductMapping(string $stockId): bool
     {
         $sql = sprintf(
@@ -152,7 +244,16 @@ class SyncDao
 
     /**
      * Create required tables if not exist
+     *
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
+     * @BABOK REQ-DAO-002 SyncDao provides CRUD operations for audit logs
+     * @return void
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-DAO-001 SyncDao provides CRUD operations for sync mappings
      */
+
     public function ensureTables(): void
     {
         // Product mapping table

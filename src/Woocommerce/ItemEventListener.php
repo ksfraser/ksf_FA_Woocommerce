@@ -40,7 +40,11 @@ class ItemEventListener
      * @param ProductExportService $productExporter Product push engine
      *
      * @since 1.0.0
+     */    /**
+     * @since 1.0.0
+     * @BABOK Related: FR-WOO-001 item event sync
      */
+
     public function __construct(
         StockItemDao $stockItemDao,
         LoggerInterface $logger,
@@ -61,7 +65,11 @@ class ItemEventListener
      * @return array{status: string, event?: string, reason?: string, woo_id?: int}
      *
      * @since 1.0.0
+     */    /**
+     * @since 1.0.0
+     * @BABOK Related: FR-WOO-001 item event sync
      */
+
     public function sync(string $stockId, string $event): array
     {
         if ($stockId === '') {

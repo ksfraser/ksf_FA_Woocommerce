@@ -9,10 +9,21 @@ namespace ksfraser\FrontAccounting\Woocommerce;
  * Appends log entries to a file on disk, creating the directory if needed.
  * 
  * @since 1.0.0
+ * @BABOK REQ-ARCH-003 Module uses Dependency Injection for service dependencies
+ * @BABOK REQ-ARCH-008 Module caches service instances and configuration
  */
 class FileLogger implements LoggerInterface
 {
     private string $path;
+
+    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-003 Module uses Dependency Injection for service dependencies
+     * @param string $path
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-003 Module uses Dependency Injection for service dependencies
+     */
 
     public function __construct(string $path)
     {
@@ -23,8 +34,13 @@ class FileLogger implements LoggerInterface
      * Log an info-level message.
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-003 Module uses Dependency Injection for service dependencies
      * @param string $message
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-003 Module uses Dependency Injection for service dependencies
      */
+
     public function info(string $message): void
     {
         $this->write('INFO', $message);
@@ -34,8 +50,13 @@ class FileLogger implements LoggerInterface
      * Log a warning-level message.
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-003 Module uses Dependency Injection for service dependencies
      * @param string $message
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-003 Module uses Dependency Injection for service dependencies
      */
+
     public function warning(string $message): void
     {
         $this->write('WARNING', $message);
@@ -45,8 +66,13 @@ class FileLogger implements LoggerInterface
      * Log an error-level message.
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-003 Module uses Dependency Injection for service dependencies
      * @param string $message
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-003 Module uses Dependency Injection for service dependencies
      */
+
     public function error(string $message): void
     {
         $this->write('ERROR', $message);
@@ -56,9 +82,14 @@ class FileLogger implements LoggerInterface
      * Append a formatted entry to the log file.
      * 
      * @since 1.0.0
+     * @BABOK REQ-ARCH-003 Module uses Dependency Injection for service dependencies
      * @param string $level
      * @param string $message
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-003 Module uses Dependency Injection for service dependencies
      */
+
     private function write(string $level, string $message): void
     {
         $dir = dirname($this->path);

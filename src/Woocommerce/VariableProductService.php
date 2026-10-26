@@ -9,6 +9,7 @@ namespace ksfraser\FrontAccounting\Woocommerce;
  * woo_prod_variable_sku_combos, and woo_prod_variable_sku_full.
  * 
  * @since 1.0.0
+ * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
  */
 class VariableProductService
 {
@@ -43,7 +44,11 @@ class VariableProductService
      * @param WooRestClientInterface $restClient
      * @param LoggerInterface $logger
      * @param DatabaseInterface $db
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     public function __construct(
         WooRestClientInterface $restClient,
         LoggerInterface $logger,
@@ -62,7 +67,11 @@ class VariableProductService
      * @since 1.0.0
      * @param string $stockId
      * @return array|null
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     public function getVariableMaster(string $stockId): ?array
     {
         $result = $this->db->query(sprintf(
@@ -79,7 +88,11 @@ class VariableProductService
      * 
      * @since 1.0.0
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     public function getAllVariableMasters(): array
     {
         return $this->db->query(sprintf(
@@ -97,7 +110,11 @@ class VariableProductService
      * @param string $stockId
      * @param bool $fuzzy Use prefix match (for parent product attributes)
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     public function getVariationAttributes(string $stockId, bool $fuzzy = false): array
     {
         $sql = sprintf(
@@ -132,7 +149,11 @@ class VariableProductService
      * @since 1.0.0
      * @param string $attributeName
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     public function getAttributesByName(string $attributeName): array
     {
         $result = $this->db->query(sprintf(
@@ -164,7 +185,11 @@ class VariableProductService
      * @since 1.0.0
      * @param string $baseSku
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     public function getSkuCombos(string $baseSku): array
     {
         return $this->db->query(sprintf(
@@ -182,7 +207,11 @@ class VariableProductService
      * @since 1.0.0
      * @param string $baseSku
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     public function getSkuFullVariations(string $baseSku): array
     {
         return $this->db->query(sprintf(
@@ -198,7 +227,11 @@ class VariableProductService
      * @since 1.0.0
      * @param string $baseSku
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     public function exportVariableProduct(string $baseSku): array
     {
         $this->logger->info(sprintf('Exporting variable product: %s', $baseSku));
@@ -261,7 +294,11 @@ class VariableProductService
      * @since 1.0.0
      * @param string $baseSku
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     public function buildVariations(string $baseSku): array
     {
         $skuFull = $this->getSkuFullVariations($baseSku);
@@ -302,7 +339,11 @@ class VariableProductService
      * @since 1.0.0
      * @param string $baseSku
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     public function buildProductAttributes(string $baseSku): array
     {
         $allAttributes = $this->getVariationAttributes($baseSku, true);
@@ -335,7 +376,11 @@ class VariableProductService
      * @param string $variationSku
      * @param array $allAttributes
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     private function getAttributesForVariation(string $variationSku, array $allAttributes): array
     {
         $attributes = [];
@@ -359,7 +404,11 @@ class VariableProductService
      * @param int $parentId
      * @param array $variations
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     public function exportVariations(int $parentId, array $variations): array
     {
         $results = [];
@@ -410,7 +459,11 @@ class VariableProductService
      * 
      * @since 1.0.0
      * @return array
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     public function exportAllVariableProducts(): array
     {
         $this->logger->info('Starting export of all variable products');
@@ -445,7 +498,11 @@ class VariableProductService
      * @since 1.0.0
      * @param string $table
      * @return string
+     */    /**
+     * @since 1.0.0
+     * @BABOK REQ-ARCH-007 ProductService handles product CRUD operations
      */
+
     private function getTableName(string $table): string
     {
         $prefix = $this->db->getPrefix();
