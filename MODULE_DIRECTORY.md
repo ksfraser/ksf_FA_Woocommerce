@@ -107,6 +107,7 @@ HRM (`ksf_FA_HRM`) is an orchestrator. These sub-modules answer hooks:
 | **ksf_FA_Logging** | — | Structured JSON-lines logging. Per-module log levels. | `0_ksf_log_levels` |
 | **ksf_FA_API** | 1.0.0 | REST API endpoints | `0_ksf_api_logs` |
 | **ksf_FA_DataIntegrity** | 2.4.4 | Purchase/sales chain auditing. Orphan/counter drift detection. | `0_ksf_integrity_log` |
+| **ksf_FA_RelatedTo** | 2.4.3-0 | Generic cross-module "record A is related to record B" associations. Owns `0_ksf_RelatedTo` table. Answers RELATE_RECORDS / RELATED_TO / RELATED_MODULES / RELATED_TO_FIELDS hooks. Provides resolved DTOs (`ContactResolvedDto`, `InvoiceResolvedDto`, …) for display. | `0_ksf_RelatedTo` |
 
 ### CRM / Sales
 
@@ -203,6 +204,7 @@ HRM (`ksf_FA_HRM`) is an orchestrator. These sub-modules answer hooks:
 | **ksf_FA_Rep_Customer** | — | Rep customer report (`reporting/`) | None |
 | **ksf_FA_Rep_Operations** | — | Rep operations report (`reporting/`) | None |
 | **ksf_fa_downloader** | — | FA module download/fetch tool | `01_fa_download_targets`, `02_fa_downloads` |
+| **ksf_FA_NativeResponder** | 1.0.0 | Hook responders over FA native data functions: FETCH_/SEARCH_ verbs, DTO in, Result envelope out (ADR-005). No own tables; no pages. | None (hooks-only) |
 
 ---
 
